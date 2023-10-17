@@ -52,12 +52,49 @@ data_thermometer_cleaned = data_thermometer(:,[3:5]); % without NaN values [...,
 Ts = 0.1; % perioda vzorkovani
 
 figure
-x = linspace(0, length(data_thermometer_cleaned) * 0.1, length(data_thermometer_cleaned));
+x = linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned));
 plot(x, data_thermometer_cleaned(:, 2), "-")
+hold on 
+plot(x, data_thermometer_cleaned(:, 3), "-")
 xlabel("Cas [s]")
-ylabel("Teplota [°C]")
+% ylabel("Teplota [°C]")
 title("Mereni teploty")
-yline(60, '--', 'Od')
+yline(60, '--', 'Odkryti vodni lazne');
+legend("Prubeh merene teploty", "Prubeh napeti")
+
+% Zavislost teploty na napeti
+figure
+[max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
+plot(data_thermometer_cleaned(1:max_idx, 2), data_thermometer_cleaned(1:max_idx, 3))
+xlabel("Teplota [°C]")
+ylabel("U [V]")
+title("Zavislost teploty na napeti")
+
+%% Elektromechanicka soustava modelu pruzne hridele
+data_shaft = readmatrix("./data/hridel_ukol_c.csv"); 
+data_shaft_cleaned = data_shaft(:,[3:5]); % without NaN and 0 values
+Ts = 0.02; % perioda vzorkovani
+
+x = linspace(0, length(data_shaft_cleaned) * Ts, length(data_shaft_cleaned));
+figure
+plot(x, 10 * sin(Ts * x))
+hold on
+plot(x, data_shaft_cleaned(:, 2), "-")
+hold on 
+plot(x, data_shaft_cleaned(:, 3), "-")
+%xlim([180 400])
+xlabel("Cas [s]")
+ylabel("U [V]")
+
+% Staticka charakteristika
+data_shaft_2 = readmatrix("./data/hridel_ukol_c.csv"); 
+data_shaft_cleaned = data_shaft(:,[3:5]); % without NaN and 0 values
+Ts = 0.02; % perioda vzorkovani
+
+data_shaft_min = min
+
+
+
 
 
 

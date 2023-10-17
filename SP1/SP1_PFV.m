@@ -32,6 +32,16 @@ ylabel("U [V]")
 title("Staticka charakteristika")
 
 % Chyba opakovatelnosti
+data_ultra_repetition = readmatrix("./data/Ultra_opak60cm.csv");
+data_ultra_repetition_voltage = data_ultra_repetition(:, 4);
+%data_ultra_repetition_voltage_avg = sum(data_ultra_repetition(:, 4)) / length(data_ultra_repetition_voltage);
+
+res = 0;
+for i=1:1:length(data_ultra_repetition_voltage)
+    res = res + (p_1(1) * data_ultra_repetition_voltage(i) + p_1(2)); 
+end
+res_avg = res / length(data_ultra_repetition_voltage); 
+
 % p_2 = polyfit(measured_values_1, distances, 1);
 % x = linspace(300, 1000, 1000); % Adapt n for resolution of graph
 % y = p_2(1) * x + p_2(2);
@@ -86,7 +96,17 @@ plot(x, data_shaft_cleaned(:, 3), "-")
 xlabel("Cas [s]")
 ylabel("U [V]")
 
+% Staticka charakteristika
+data_shaft = readmatrix("./data/hridel_ukol_c.csv"); 
+data_shaft_cleaned = data_shaft(:,[3:5]); % without NaN and 0 values
+Ts = 0.02; % perioda vzorkovani
 
+[max_shaft, max_idx_shaft] = max(data_shaft_cleaned(:, 2));
+[min_shaft, min_idx_shaft] = min(data_shaft_cleaned(:, 2));
+
+x = linspace(-10, 10, length(data_shaft_cleaned(min_idx_shaft:max_idx_shaft, 2)));
+figure
+plot(x, data_shaft_cleaned(min_idx_shaft:max_idx_shaft, 2));
 
 
 
