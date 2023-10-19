@@ -82,17 +82,16 @@ legend("Teplota namerena referencnim snimacem [°C]", "Napeti namerene polovodico
 p_3 = polyfit(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3), 3);
 p_4 = polyfit(data_thermometer_cleaned(max_idx:end, 3), data_thermometer_cleaned(max_idx:end, 2), 3);
 
-x = linspace(25, 94, 1000); % Adapt n for resolution of graph
-y = p_3(1) * x.^3 + p_3(2) * x.^2 + p_3(3) * x + p_3(4);
+x = linspace(25, 94, ); % Adapt n for resolution of graph
+y = p_2(1) * x + p_2(2);
 
 figure
 plot(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3))
 hold on
-plot(x, y)
+plot(25:94:0.01, p_3)
 xlabel("Teplota namerena referencnim snimacem [°C]")
 ylabel("Napeti namerene polovodicovym snimacem U [V]")
 title("Zavislost teploty na napeti")
-legend("Staticka charakteristika", "Aproximacni polynom")
 
 
 %% Elektromechanicka soustava modelu pruzne hridele
