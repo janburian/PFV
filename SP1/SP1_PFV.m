@@ -124,9 +124,22 @@ figure
 plot(x, data_shaft_cleaned(min_idx_shaft:max_idx_shaft, 2));
 
 %% Pruzny pas
+data_belt = readmatrix("./data/pruzny_pas_C-a.csv"); 
+data_belt_cleaned = data_belt(:,[6:7]); % without NaN and 0 values
 
+figure
+plot(data_belt_cleaned(:,1), data_belt_cleaned(:,2))
+title("Staticka charakteristika")
+xlabel("Laserovy snimac d [mm]")
+ylabel("Indukcni snimac U [V]")
+hold on
+p_5 = polyfit(data_belt_cleaned(:,1), data_belt_cleaned(:,2), 1);
+x = linspace(85, 130, 1000); % Adapt n for resolution of graph
+y = p_5(1) * x + p_5(2);
+plot(x, y)
 
-
+data_belt_c = readmatrix("./data/pruzny_pas_C-c.csv"); 
+data_belt_c_cleaned = data_belt_c(:,[6:7]);
 
 
 
