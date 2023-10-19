@@ -76,7 +76,7 @@ xlabel("Cas [s]")
 % ylabel("Teplota [째C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena referencnim snimacem [째C]", "Napeti namerene polovodicovym snimacem U [V]")
+legend("Teplota namerena referencnim snimacem [캜]", "Napeti namerene polovodicovym snimacem U [V]")
 
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
@@ -91,7 +91,7 @@ figure
 plot(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3))
 hold on
 plot(x, y)
-xlabel("Teplota namerena referencnim snimacem [째C]")
+xlabel("Teplota namerena referencnim snimacem [캜]")
 ylabel("Napeti namerene polovodicovym snimacem U [V]")
 title("Zavislost teploty na napeti")
 legend("Staticka charakteristika", "Aproximacni polynom")
@@ -100,10 +100,10 @@ y_inv=p_4(1) * data_therm2.^3 + p_4(2) * data_therm2.^2 + p_4(3) * data_therm2 +
 figure
 plot(linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned)),y_inv)
 xlabel("Cas [s]")
-ylabel("Teplota [째C]")
+ylabel("Teplota [캜]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena polovodicovym snimacem T [째C]")
+legend("Teplota namerena polovodicovym snimacem T [캜]")
 
 % Opak chyba
 y_inv=y_inv(1:2000);
@@ -145,7 +145,7 @@ p_5 = polyfit(data_belt_cleaned(voltage_range,1), data_belt_cleaned(voltage_rang
 x = linspace(90, 115, 1000); % Adapt n for resolution of graph
 y = p_5(1) * x + p_5(2);
 
-
+Ts = 0.02;
 
 figure
 plot(data_belt_cleaned(:,1), data_belt_cleaned(:,2))
@@ -156,8 +156,22 @@ xlabel("Laserovy snimac d [mm]")
 ylabel("Indukcni snimac U [V]")
 legend("Staticka charakteristika", "Primkova aproximace")
 
+figure
+x = linspace(0, length(data_belt_cleaned) * Ts, length(data_belt_cleaned));
+plot(x, data_belt_cleaned(:,1))
+title("Vzdalenost volne kladky od laseroveho snimace")
+xlabel("Cas t [s]")
+ylabel("Vzdalenost d [mm]")
+
 data_belt_c = readmatrix("./data/pruzny_pas_C-c.csv"); 
 data_belt_c_cleaned = data_belt_c(:,[6:7]);
+x = linspace(0, length(data_belt_c_cleaned) * Ts, length(data_belt_c_cleaned));
+figure
+plot(x, data_belt_c_cleaned(:,1))
+title("Vzdalenost volne kladky od laseroveho snimace")
+xlabel("Cas t [s]")
+ylabel("Vzdalenost d [mm]")
+
 %% Chyby opakovatelnosti
 function [me,vr,Deltax, dx] = opak(data,dmin,dmax)
 me=mean(data);
