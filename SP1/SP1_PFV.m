@@ -18,7 +18,7 @@ title("Mereni vzdalenosti pomoci ultrazvukoveho snimace")
 
 % Prolozeni pomoci primky - Staticka charakteristika
 p_1 = polyfit(distances, measured_values_1, 1);
-x = linspace(300, 1000, 1000); % Adapt n for resolution of graph
+x = linspace(300, 1000, 8); % Adapt n for resolution of graph
 y = p_1(1) * x + p_1(2);
 
 figure;
