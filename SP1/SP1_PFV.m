@@ -22,7 +22,7 @@ x = linspace(300, 1000, 8); % Adapt n for resolution of graph
 y = p_1(1) * x + p_1(2);
 
 figure;
-scatter(distances, measured_values_1, '+', "blue")
+scatter(distances, measured_values_1, '*', "blue")
 hold on
 scatter(distances, measured_values_2, '+', "red")
 hold on
@@ -37,14 +37,15 @@ data_ultra_repetition = readmatrix("./data/Ultra_opak60cm.csv");
 data_ultra_repetition_voltage = data_ultra_repetition(:, 4);
 %data_ultra_repetition_voltage_avg = sum(data_ultra_repetition(:, 4)) / length(data_ultra_repetition_voltage);
 p_2 = polyfit([measured_values_1, measured_values_2], [distances, distances], 1);
-x = linspace(300, 1000, 8); % Adapt n for resolution of graph
-y = p_2(1) * x + p_2(2);
+y = p_2(1) * data_ultra_repetition_voltage + p_2(2);
+ 
+[muV,varV,deltaV,dV]=opak(y,300,1000)
 
-res = 0;
-for i=1:1:length(data_ultra_repetition_voltage)
-    res = res + (p_2(1) * data_ultra_repetition_voltage(i) + p_2(2)); 
-end
-res_avg = res / length(data_ultra_repetition_voltage); 
+% res = 0;
+% for i=1:1:length(data_ultra_repetition_voltage)
+%     res = res + (p_2(1) * data_ultra_repetition_voltage(i) + p_2(2)); 
+% end
+% res_avg = res / length(data_ultra_repetition_voltage); 
 
 % p_2 = polyfit(measured_values_1, distances, 1);
 % x = linspace(300, 1000, 1000); % Adapt n for resolution of graph
@@ -63,6 +64,7 @@ res_avg = res / length(data_ultra_repetition_voltage);
 %% Mereni teploty
 data_thermometer = readmatrix("./data/teplomer_data_all.csv"); 
 data_thermometer_cleaned = data_thermometer(:,[3:5]); % without NaN values [..., temperature, ...]
+data_therm2=data_thermometer_cleaned(:,3);
 Ts = 0.1; % perioda vzorkovani
 
 figure
@@ -71,10 +73,10 @@ plot(x, data_thermometer_cleaned(:, 2), "-")
 hold on 
 plot(x, data_thermometer_cleaned(:, 3), "-")
 xlabel("Cas [s]")
-% ylabel("Teplota [캜]")
+% ylabel("Teplota [째C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena referencnim snimacem [캜]", "Napeti namerene polovodicovym snimacem U [V]")
+legend("Teplota namerena referencnim snimacem [째C]", "Napeti namerene polovodicovym snimacem U [V]")
 
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
@@ -89,12 +91,23 @@ figure
 plot(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3))
 hold on
 plot(x, y)
-xlabel("Teplota namerena referencnim snimacem [캜]")
+xlabel("Teplota namerena referencnim snimacem [째C]")
 ylabel("Napeti namerene polovodicovym snimacem U [V]")
 title("Zavislost teploty na napeti")
 legend("Staticka charakteristika", "Aproximacni polynom")
 
+y_inv=p_4(1) * data_therm2.^3 + p_4(2) * data_therm2.^2 + p_4(3) * data_therm2 + p_4(4);
+figure
+plot(linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned)),y_inv)
+xlabel("Cas [s]")
+ylabel("Teplota [째C]")
+title("Vystup referencniho a polovodicoveho snimace")
+yline(60, '--', 'Odkryti vodni lazne');
+legend("Teplota namerena polovodicovym snimacem T [째C]")
 
+% Opak chyba
+y_inv=y_inv(1:2000);
+[muT,varT,deltaT,dT]=opak(y_inv,0,100)
 %% Elektromechanicka soustava modelu pruzne hridele
 data_shaft = readmatrix("./data/hridel_ukol_c.csv"); 
 data_shaft_cleaned = data_shaft(:,[3:5]); % without NaN and 0 values
@@ -124,22 +137,15 @@ figure
 plot(x, data_shaft_cleaned(min_idx_shaft:max_idx_shaft, 2));
 
 %% Pruzny pas
-data_belt = readmatrix("./data/pruzny_pas_C-a.csv"); 
-data_belt_cleaned = data_belt(:,[6:7]); % without NaN and 0 values
-
-figure
-plot(data_belt_cleaned(:,1), data_belt_cleaned(:,2))
-title("Staticka charakteristika")
-xlabel("Laserovy snimac d [mm]")
-ylabel("Indukcni snimac U [V]")
-hold on
-p_5 = polyfit(data_belt_cleaned(:,1), data_belt_cleaned(:,2), 1);
-x = linspace(85, 130, 1000); % Adapt n for resolution of graph
-y = p_5(1) * x + p_5(2);
-plot(x, y)
-
-data_belt_c = readmatrix("./data/pruzny_pas_C-c.csv"); 
-data_belt_c_cleaned = data_belt_c(:,[6:7]);
 
 
 
+
+%% Chyby opakovatelnosti
+function [me,vr,Deltax, dx] = opak(data,dmin,dmax)
+me=mean(data);
+vr=var(data);
+Deltax=2*sqrt(vr);
+dx=Deltax/(dmax-dmin)*100;
+fprintf("Charakteristiky chyb opakovatelnosti:")
+end
