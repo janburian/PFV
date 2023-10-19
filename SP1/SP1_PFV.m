@@ -73,7 +73,7 @@ plot(x, data_thermometer_cleaned(:, 2), "-")
 hold on 
 plot(x, data_thermometer_cleaned(:, 3), "-")
 xlabel("Cas [s]")
-% ylabel("Teplota [Â°C]")
+% ylabel("Teplota [°C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
 legend("Teplota namerena referencnim snimacem [°C]", "Napeti namerene polovodicovym snimacem U [V]")
@@ -108,33 +108,44 @@ legend("Teplota namerena polovodicovym snimacem T [°C]")
 % Opak chyba
 y_inv=y_inv(1:2000);
 [muT,varT,deltaT,dT]=opak(y_inv,0,100)
+
 %% Elektromechanicka soustava modelu pruzne hridele
 data_shaft = readmatrix("./data/hridel_ukol_c.csv"); 
-data_shaft_cleaned = data_shaft(:,[3:5]); % without NaN and 0 values
+data_shaft_cleaned = data_shaft(:,[4:6]); % without NaN and 0 values
 Ts = 0.02; % perioda vzorkovani
 
 x = linspace(0, length(data_shaft_cleaned) * Ts, length(data_shaft_cleaned));
 figure
-plot(x, 10 * sin(Ts * x))
-hold on
+plot(x, data_shaft_cleaned(:, 1), "-")
+hold on 
 plot(x, data_shaft_cleaned(:, 2), "-")
 hold on 
 plot(x, data_shaft_cleaned(:, 3), "-")
 %xlim([180 400])
 xlabel("Cas [s]")
 ylabel("U [V]")
+title("Casovy prubeh signalu")
+legend("IRC1", "IRC2", "Vstupni signal")
 
 % Staticka charakteristika
-data_shaft = readmatrix("./data/hridel_ukol_c.csv"); 
-data_shaft_cleaned = data_shaft(:,[3:5]); % without NaN and 0 values
-Ts = 0.02; % perioda vzorkovani
+voltage_range = find(data_shaft_cleaned(:,3) > -9 & data_shaft_cleaned(:,3) < 9);
+p_6 = polyfit(data_shaft_cleaned(voltage_range,3), data_shaft_cleaned(voltage_range,1), 1);
+x = linspace(-9, 9, 1000); % Adapt n for resolution of graph
+y = p_6(1) * x + p_6(2);
 
-[max_shaft, max_idx_shaft] = max(data_shaft_cleaned(:, 2));
-[min_shaft, min_idx_shaft] = min(data_shaft_cleaned(:, 2));
-
-x = linspace(-10, 10, length(data_shaft_cleaned(min_idx_shaft:max_idx_shaft, 2)));
 figure
-plot(x, data_shaft_cleaned(min_idx_shaft:max_idx_shaft, 2));
+plot(data_shaft_cleaned(:, 3), data_shaft_cleaned(:, 1));
+hold on
+plot(x, y, 'LineWidth', 1.3)
+xlabel("Napeti na motor [V]")
+ylabel("Uhlova rychlost motoru [\omega]")
+title("Staticka charakteristika")
+legend("Staticka charakteristika", "Aproximacni primka")
+
+% 
+data_shaft_rotation = readmatrix("./data/hridel_10_otaceni.csv"); 
+data_shaft_rotation_cleaned = data_shaft(:,[4:5]); % without NaN and 0 values
+Ts = 0.02; % perioda vzorkovani
 
 %% Pruzny pas
 data_belt = readmatrix("./data/pruzny_pas_C-a.csv"); 
