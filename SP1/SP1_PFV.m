@@ -149,18 +149,15 @@ y = p_5(1) * x + p_5(2);
 
 figure
 plot(data_belt_cleaned(:,1), data_belt_cleaned(:,2))
+hold on
+plot(x, y)
 title("Staticka charakteristika")
 xlabel("Laserovy snimac d [mm]")
 ylabel("Indukcni snimac U [V]")
-hold on
-plot(x, y)
-
+legend("Staticka charakteristika", "Primkova aproximace")
 
 data_belt_c = readmatrix("./data/pruzny_pas_C-c.csv"); 
 data_belt_c_cleaned = data_belt_c(:,[6:7]);
-
-
-
 %% Chyby opakovatelnosti
 function [me,vr,Deltax, dx] = opak(data,dmin,dmax)
 me=mean(data);
