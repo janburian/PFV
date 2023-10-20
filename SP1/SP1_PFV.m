@@ -138,7 +138,7 @@ plot(data_shaft_cleaned(:, 3), data_shaft_cleaned(:, 1));
 hold on
 plot(x, y, 'LineWidth', 1.3)
 xlabel("Napeti na motor [V]")
-ylabel("Uhlova rychlost motoru [\omega]")
+ylabel("Uhlova rychlost motoru [rad\cdots^{-1}]")
 title("Staticka charakteristika")
 legend("Staticka charakteristika", "Aproximacni primka")
 
