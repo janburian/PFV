@@ -156,7 +156,7 @@ p_5 = polyfit(data_belt_cleaned(voltage_range,1), data_belt_cleaned(voltage_rang
 x = linspace(90, 115, 1000); % Adapt n for resolution of graph
 y = p_5(1) * x + p_5(2);
 
-Ts = 0.02;
+Ts = 0.01;
 
 figure
 plot(data_belt_cleaned(:,1), data_belt_cleaned(:,2))
@@ -174,14 +174,33 @@ title("Vzdalenost volne kladky od laseroveho snimace")
 xlabel("Cas t [s]")
 ylabel("Vzdalenost d [mm]")
 
-data_belt_c = readmatrix("./data/pruzny_pas_C-c.csv"); 
-data_belt_c_cleaned = data_belt_c(:,[6:7]);
-x = linspace(0, length(data_belt_c_cleaned) * Ts, length(data_belt_c_cleaned));
-figure
-plot(x, data_belt_c_cleaned(:,1))
-title("Vzdalenost volne kladky od laseroveho snimace")
-xlabel("Cas t [s]")
-ylabel("Vzdalenost d [mm]")
+% figure
+% x = linspace(0, length(data_belt_cleaned) * Ts, length(data_belt_cleaned));
+% plot(data_belt_cleaned(:,2), data_belt_cleaned(:,1))
+% 
+% data_belt_c = readmatrix("./data/pruzny_pas_C-c.csv"); 
+% data_belt_c_cleaned = data_belt_c(:,[4:7]);
+% %x = linspace(0, length(data_belt_c_cleaned) * Ts, length(data_belt_c_cleaned));
+% figure
+% plot(data_belt_c_cleaned(:,1) - data_belt_c_cleaned(:,2), data_belt_c_cleaned(:,3) - data_belt_c_cleaned(:,4))
+% title("Prokluz")
+
+%% Indukcni snimac vzdalenosti typu PR6423 (Eddy current)
+distances_eddy = [0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]; % [mm]
+coeff = -3.3 / 13.3; 
+measured_values_eddy = coeff * [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
+
+p_eddy = polyfit(distances_eddy, measured_values_eddy, 1);
+x = linspace(0.5, 2.5, 8); % Adapt n for resolution of graph
+y_eddy = p_eddy(1) * x + p_eddy(2);
+
+figure;
+scatter(distances_eddy, measured_values_eddy, '+', "blue")
+hold on
+plot(x, y_eddy)
+xlabel("d [mm]")
+ylabel("U [V]")
+title("Indukcni snimac vzdalenosti typu PR6423")
 
 %% Chyby opakovatelnosti
 function [me,vr,Deltax, dx] = opak(data,dmin,dmax)
@@ -191,3 +210,5 @@ Deltax=2*sqrt(vr);
 dx=Deltax/(dmax-dmin)*100;
 fprintf("Charakteristiky chyb opakovatelnosti:")
 end
+
+
