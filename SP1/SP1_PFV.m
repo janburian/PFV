@@ -26,7 +26,7 @@ scatter(distances, measured_values_1, '*', "blue")
 hold on
 scatter(distances, measured_values_2, '+', "red")
 hold on
-plot(x, y, "black"); 
+plot(x, y); 
 xlabel("d [mm]")
 ylabel("U [V]")
 title("Staticka charakteristika")
@@ -40,26 +40,6 @@ p_2 = polyfit([measured_values_1, measured_values_2], [distances, distances], 1)
 y = p_2(1) * data_ultra_repetition_voltage + p_2(2);
  
 [muV,varV,deltaV,dV]=opak(y,300,1000)
-
-% res = 0;
-% for i=1:1:length(data_ultra_repetition_voltage)
-%     res = res + (p_2(1) * data_ultra_repetition_voltage(i) + p_2(2)); 
-% end
-% res_avg = res / length(data_ultra_repetition_voltage); 
-
-% p_2 = polyfit(measured_values_1, distances, 1);
-% x = linspace(300, 1000, 1000); % Adapt n for resolution of graph
-% y = p_2(1) * x + p_2(2);
-% 
-% figure;
-% scatter(distances, measured_values_1, '+', "blue")
-% hold on
-% scatter(distances, measured_values_2, '+', "red")
-% hold on
-% plot(x, y, "black"); 
-% xlabel("d [mm]")
-% ylabel("U [V]")
-% title("Chyba opakovatelnosti")
 
 %% Mereni teploty
 data_thermometer = readmatrix("./data/teplomer_data_all.csv"); 
@@ -193,14 +173,18 @@ measured_values_eddy = coeff * [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1
 p_eddy = polyfit(distances_eddy, measured_values_eddy, 1);
 x = linspace(0.5, 2.5, 8); % Adapt n for resolution of graph
 y_eddy = p_eddy(1) * x + p_eddy(2);
+y_eddy_manufacturer = -13.33 * x;
 
 figure;
-scatter(distances_eddy, measured_values_eddy, '+', "blue")
+scatter(distances_eddy, measured_values_eddy, '*', "blue")
 hold on
 plot(x, y_eddy)
+% hold on 
+% plot(x, y_eddy_manufacturer)
 xlabel("d [mm]")
 ylabel("U [V]")
-title("Indukcni snimac vzdalenosti typu PR6423")
+title("Staticka charakteristika indukcniho snimace vzdalenosti")
+legend("Namerena data", "Aproximacni primka", "Staticka charakteristika dana vyrobcem")
 
 %% Chyby opakovatelnosti
 function [me,vr,Deltax, dx] = opak(data,dmin,dmax)
