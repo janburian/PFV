@@ -53,10 +53,10 @@ plot(x, data_thermometer_cleaned(:, 2), "-")
 hold on 
 plot(x, data_thermometer_cleaned(:, 3), "-")
 xlabel("Cas [s]")
-% ylabel("Teplota [캜]")
+% ylabel("Teplota [째C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena referencnim snimacem [캜]", "Napeti namerene polovodicovym snimacem U [V]")
+legend("Teplota namerena referencnim snimacem [째C]", "Napeti namerene polovodicovym snimacem U [V]")
 
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
@@ -71,7 +71,7 @@ figure
 plot(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3))
 hold on
 plot(x, y)
-xlabel("Teplota namerena referencnim snimacem [캜]")
+xlabel("Teplota namerena referencnim snimacem [째C]")
 ylabel("Napeti namerene polovodicovym snimacem U [V]")
 title("Zavislost teploty na napeti")
 legend("Staticka charakteristika", "Aproximacni polynom")
@@ -80,10 +80,10 @@ y_inv=p_4(1) * data_therm2.^3 + p_4(2) * data_therm2.^2 + p_4(3) * data_therm2 +
 figure
 plot(linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned)),y_inv)
 xlabel("Cas [s]")
-ylabel("Teplota [캜]")
+ylabel("Teplota [째C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena polovodicovym snimacem T [캜]")
+legend("Teplota namerena polovodicovym snimacem T [째C]")
 
 % Opak chyba
 y_inv=y_inv(1:2000);
@@ -157,13 +157,16 @@ ylabel("Vzdalenost d [mm]")
 % figure
 % x = linspace(0, length(data_belt_cleaned) * Ts, length(data_belt_cleaned));
 % plot(data_belt_cleaned(:,2), data_belt_cleaned(:,1))
-% 
-% data_belt_c = readmatrix("./data/pruzny_pas_C-c.csv"); 
-% data_belt_c_cleaned = data_belt_c(:,[4:7]);
-% %x = linspace(0, length(data_belt_c_cleaned) * Ts, length(data_belt_c_cleaned));
-% figure
-% plot(data_belt_c_cleaned(:,1) - data_belt_c_cleaned(:,2), data_belt_c_cleaned(:,3) - data_belt_c_cleaned(:,4))
-% title("Prokluz")
+%%
+data_belt_c = readmatrix("./data/pruzny_pas_kontrola.csv"); 
+data_belt_c_cleaned = data_belt_c(1:15538,[4:7]);%155538
+figure
+plot( data_belt_c_cleaned(:,4),(p_5(1)*data_belt_c_cleaned(:,3)+p_5(2)))
+title("Pokuz")
+%x = linspace(0, length(data_belt_c_cleaned) * Ts, length(data_belt_c_cleaned));
+figure
+plot( data_belt_c_cleaned(:,4),data_belt_c_cleaned(:,1) - data_belt_c_cleaned(:,2))
+title("Prokluz")
 
 %% Indukcni snimac vzdalenosti typu PR6423 (Eddy current)
 distances_eddy = [0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]; % [mm]
@@ -179,12 +182,16 @@ figure;
 scatter(distances_eddy, measured_values_eddy, '*', "blue")
 hold on
 plot(x, y_eddy)
-% hold on 
-% plot(x, y_eddy_manufacturer)
+hold on 
+plot(x, y_eddy_manufacturer)
 xlabel("d [mm]")
 ylabel("U [V]")
 title("Staticka charakteristika indukcniho snimace vzdalenosti")
 legend("Namerena data", "Aproximacni primka", "Staticka charakteristika dana vyrobcem")
+
+data_eddy = readmatrix("./data/eddy_5.csv");
+data_eddy_opak=p_eddy(1)*data_eddy(:,4)+p_eddy(2);
+[mEddy,varEddy, DeltaEddy, dEddy]=opak(data_eddy_opak,0.5,2.5)
 
 %% Chyby opakovatelnosti
 function [me,vr,Deltax, dx] = opak(data,dmin,dmax)
@@ -194,5 +201,3 @@ Deltax=2*sqrt(vr);
 dx=Deltax/(dmax-dmin)*100;
 fprintf("Charakteristiky chyb opakovatelnosti:")
 end
-
-
