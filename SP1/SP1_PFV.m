@@ -133,6 +133,8 @@ data_belt_cleaned = data_belt(:,[6:7]); % without NaN and 0 values
 
 voltage_range = find(data_belt_cleaned(:,2) > -7 & data_belt_cleaned(:,2) < 7);
 p_5 = polyfit(data_belt_cleaned(voltage_range,1), data_belt_cleaned(voltage_range,2), 1);
+p_6 = polyfit(data_belt_cleaned(voltage_range,2), data_belt_cleaned(voltage_range,1), 1);
+
 x = linspace(90, 115, 1000); % Adapt n for resolution of graph
 y = p_5(1) * x + p_5(2);
 
@@ -158,25 +160,33 @@ ylabel("Vzdalenost d [mm]")
 % x = linspace(0, length(data_belt_cleaned) * Ts, length(data_belt_cleaned));
 % plot(data_belt_cleaned(:,2), data_belt_cleaned(:,1))
 %%
+
+data_belt_b = readmatrix("./data/pruzny_pas_b_Data.csv"); 
+figure
+plot( data_belt_b(:,7),(p_6(1)*data_belt_b(:,4)+p_6(2)))
+title("Pokuz")
+%%
 data_belt_c = readmatrix("./data/pruzny_pas_kontrola.csv"); 
 data_belt_c_cleaned = data_belt_c(1:15538,[4:7]);%155538
-figure
-plot( data_belt_c_cleaned(:,4),(p_5(1)*data_belt_c_cleaned(:,3)+p_5(2)))
-title("Pokuz")
+
 %x = linspace(0, length(data_belt_c_cleaned) * Ts, length(data_belt_c_cleaned));
 figure
 plot( data_belt_c_cleaned(:,4),data_belt_c_cleaned(:,1) - data_belt_c_cleaned(:,2))
+%plot( data_belt_c_cleaned(:,1) - data_belt_c_cleaned(:,2),data_belt_c_cleaned(:,4))
+
 title("Prokluz")
 
 %% Indukcni snimac vzdalenosti typu PR6423 (Eddy current)
 distances_eddy = [0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]; % [mm]
 coeff = -3.3 / 13.3; 
 measured_values_eddy = coeff * [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
+%measured_values_eddy = [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
 
 p_eddy = polyfit(distances_eddy, measured_values_eddy, 1);
+p_eddy_2 = polyfit( measured_values_eddy,distances_eddy, 1);
 x = linspace(0.5, 2.5, 8); % Adapt n for resolution of graph
 y_eddy = p_eddy(1) * x + p_eddy(2);
-y_eddy_manufacturer = -13.33 * x;
+y_eddy_manufacturer = linspace(-2, -20, 8);
 
 figure;
 scatter(distances_eddy, measured_values_eddy, '*', "blue")
