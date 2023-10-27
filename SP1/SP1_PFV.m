@@ -183,10 +183,10 @@ measured_values_eddy = coeff * [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1
 %measured_values_eddy = [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
 
 p_eddy = polyfit(distances_eddy, measured_values_eddy, 1);
-p_eddy_2 = polyfit( measured_values_eddy,distances_eddy, 1);
+p_eddy_2 = polyfit(measured_values_eddy,distances_eddy, 1);
 x = linspace(0.5, 2.5, 8); % Adapt n for resolution of graph
 y_eddy = p_eddy(1) * x + p_eddy(2);
-y_eddy_manufacturer = linspace(-2, -20, 8);
+y_eddy_manufacturer = linspace(-2, -18, 8);
 
 figure;
 scatter(distances_eddy, measured_values_eddy, '*', "blue")
