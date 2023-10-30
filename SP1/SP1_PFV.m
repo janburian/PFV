@@ -160,11 +160,18 @@ ylabel("Vzdalenost d [mm]")
 % x = linspace(0, length(data_belt_cleaned) * Ts, length(data_belt_cleaned));
 % plot(data_belt_cleaned(:,2), data_belt_cleaned(:,1))
 %%
-
 data_belt_b = readmatrix("./data/pruzny_pas_b_Data.csv"); 
 figure
 plot( data_belt_b(:,7),(p_6(1)*data_belt_b(:,4)+p_6(2)))
 title("Pokuz")
+
+
+%% 
+data_belt_test = readmatrix("./data/pruzny_pas_b_Data_correct.csv"); 
+figure
+plot(linspace(1, length(data_belt_test), 1), data_belt_test(:,7))
+title("Pokuz")
+
 %%
 data_belt_c = readmatrix("./data/pruzny_pas_kontrola.csv"); 
 data_belt_c_cleaned = data_belt_c(1:15538,[4:7]);%155538
