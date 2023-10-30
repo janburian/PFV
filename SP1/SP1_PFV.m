@@ -160,7 +160,7 @@ ylabel("Vzdalenost d [mm]")
 % x = linspace(0, length(data_belt_cleaned) * Ts, length(data_belt_cleaned));
 % plot(data_belt_cleaned(:,2), data_belt_cleaned(:,1))
 %%
-data_belt_b = readmatrix("./data/pruzny_pas_b_Data.csv"); 
+data_belt_b = readmatrix("./data/pruzny_pas_b_Data_correct.csv"); 
 figure
 plot( data_belt_b(:,7),(p_6(1)*data_belt_b(:,4)+p_6(2)))
 title("Pokuz")
@@ -185,7 +185,7 @@ title("Prokluz")
 
 %% Indukcni snimac vzdalenosti typu PR6423 (Eddy current)
 distances_eddy = [0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]; % [mm]
-coeff = -3.3 / 13.3; 
+coeff = 13.3 / 3.3; 
 measured_values_eddy = coeff * [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
 %measured_values_eddy = [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
 
