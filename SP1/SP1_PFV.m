@@ -68,9 +68,11 @@ x = linspace(25, 94, 1000); % Adapt n for resolution of graph
 y = p_3(1) * x.^3 + p_3(2) * x.^2 + p_3(3) * x + p_3(4);
 
 
-data_thermometer_90_to_25 = 
+data_thermometer_90_to_25_temperature = [data_thermometer_cleaned(max_idx:end, 2); data_thermometer_cleaned(1:3470, 2)];
+data_thermometer_90_to_25_voltage = [data_thermometer_cleaned(max_idx:end, 3); data_thermometer_cleaned(1:3470, 3)];
+
 figure
-plot(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3))
+plot(data_thermometer_90_to_25_temperature, data_thermometer_90_to_25_voltage)
 hold on
 plot(x, y)
 xlabel("Teplota namerena referencnim snimacem [°C]")
