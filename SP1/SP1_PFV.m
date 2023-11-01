@@ -53,10 +53,10 @@ plot(x, data_thermometer_cleaned(:, 2), "-")
 hold on 
 plot(x, data_thermometer_cleaned(:, 3), "-")
 xlabel("Cas [s]")
-% ylabel("Teplota [ï¿½C]")
+% ylabel("Teplota [°C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena referencnim snimacem [ï¿½C]", "Napeti namerene polovodicovym snimacem U [V]")
+legend("Teplota namerena referencnim snimacem [°C]", "Napeti namerene polovodicovym snimacem U [V]")
 
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
@@ -67,11 +67,13 @@ p_4 = polyfit(data_thermometer_cleaned(max_idx:end, 3), data_thermometer_cleaned
 x = linspace(25, 94, 1000); % Adapt n for resolution of graph
 y = p_3(1) * x.^3 + p_3(2) * x.^2 + p_3(3) * x + p_3(4);
 
+
+data_thermometer_90_to_25 = 
 figure
 plot(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3))
 hold on
 plot(x, y)
-xlabel("Teplota namerena referencnim snimacem [ï¿½C]")
+xlabel("Teplota namerena referencnim snimacem [°C]")
 ylabel("Napeti namerene polovodicovym snimacem U [V]")
 title("Zavislost teploty na napeti")
 legend("Staticka charakteristika", "Aproximacni polynom")
@@ -80,10 +82,10 @@ y_inv=p_4(1) * data_therm2.^3 + p_4(2) * data_therm2.^2 + p_4(3) * data_therm2 +
 figure
 plot(linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned)),y_inv)
 xlabel("Cas [s]")
-ylabel("Teplota [ï¿½C]")
+ylabel("Teplota [°C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena polovodicovym snimacem T [ï¿½C]")
+legend("Teplota namerena polovodicovym snimacem T [°C]")
 
 % Opak chyba
 y_inv=y_inv(1:2000);
