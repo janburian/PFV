@@ -19,7 +19,9 @@ title("Mereni vzdalenosti pomoci ultrazvukoveho snimace")
 % Prolozeni pomoci primky - Staticka charakteristika
 p_1 = polyfit([distances, distances], [measured_values_1, measured_values_2], 1);
 x = linspace(300, 1000, 8); % Adapt n for resolution of graph
+
 y = p_1(1) * x + p_1(2);
+y_manufacturer_ultra = (4/350) * x - 1.42
 
 figure;
 scatter(distances, measured_values_1, '*', "blue")
@@ -27,10 +29,12 @@ hold on
 scatter(distances, measured_values_2, '+', "red")
 hold on
 plot(x, y); 
+hold on
+plot(x, y_manufacturer_ultra)
 xlabel("d [mm]")
 ylabel("U [V]")
 title("Staticka charakteristika")
-legend("Mereni 1", "Mereni 2", "Aproximacni primka")
+legend("Mereni 1", "Mereni 2", "Aproximacni primka", "Staticka charakteristika dana vyrobcem")
 
 % Chyba opakovatelnosti
 data_ultra_repetition = readmatrix("./data/Ultra_opak60cm.csv");
@@ -61,8 +65,8 @@ legend("Teplota namerena referencnim snimacem [°C]", "Napeti namerene polovodico
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
 
-data_thermometer_90_to_25_temperature = [data_thermometer_cleaned(max_idx:end, 2); data_thermometer_cleaned(1:500, 2)];
-data_thermometer_90_to_25_voltage = [data_thermometer_cleaned(max_idx:end, 3); data_thermometer_cleaned(1:500, 3)];
+data_thermometer_90_to_25_temperature = [data_thermometer_cleaned(max_idx:end, 2); flip(data_thermometer_cleaned(1:500, 2))];
+data_thermometer_90_to_25_voltage = [data_thermometer_cleaned(max_idx:end, 3); flip(data_thermometer_cleaned(1:500, 3))];
 
 % p_3 = polyfit(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3), 3);
 % p_4 = polyfit(data_thermometer_cleaned(max_idx:end, 3), data_thermometer_cleaned(max_idx:end, 2), 3);
@@ -196,8 +200,6 @@ ylabel("d [mm]")
 legend("Staticka charakteristika", "Aproximacni primka");
 
 
-
-
 voltage_range = find(data_belt_c_cleaned(:,4) >-0.7 & data_belt_c_cleaned(:,4) < 1.18);
 LinChar=polyfit(data_belt_c_cleaned(voltage_range,4),data_belt_c_cleaned(voltage_range,1) - data_belt_c_cleaned(voltage_range,2),1);
 
@@ -220,6 +222,7 @@ chyba_laser= data_belt_chyba(:,6);
 chyba_ind= p_6(1)*data_belt_chyba(:,7)+p_6(2);
 [mLaser, varLaser, DLaser, dLaser]=opak(chyba_laser,88.2, 125.6)
 [mInd, varInd, DInd, dInd]=opak(chyba_ind,88.2, 125.6)
+
 %% Indukcni snimac vzdalenosti typu PR6423 (Eddy current)
 distances_eddy = [0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]; % [mm]
 coeff = 3.3 / 13.3; 
