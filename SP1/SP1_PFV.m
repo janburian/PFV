@@ -61,15 +61,17 @@ legend("Teplota namerena referencnim snimacem [°C]", "Napeti namerene polovodico
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
 
-p_3 = polyfit(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3), 3);
-p_4 = polyfit(data_thermometer_cleaned(max_idx:end, 3), data_thermometer_cleaned(max_idx:end, 2), 3);
+data_thermometer_90_to_25_temperature = [data_thermometer_cleaned(max_idx:end, 2); data_thermometer_cleaned(1:500, 2)];
+data_thermometer_90_to_25_voltage = [data_thermometer_cleaned(max_idx:end, 3); data_thermometer_cleaned(1:500, 3)];
+
+% p_3 = polyfit(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3), 3);
+% p_4 = polyfit(data_thermometer_cleaned(max_idx:end, 3), data_thermometer_cleaned(max_idx:end, 2), 3);
+
+p_3 = polyfit(data_thermometer_90_to_25_temperature, data_thermometer_90_to_25_voltage, 3);
 
 x = linspace(25, 94, 1000); % Adapt n for resolution of graph
 y = p_3(1) * x.^3 + p_3(2) * x.^2 + p_3(3) * x + p_3(4);
 
-
-data_thermometer_90_to_25_temperature = [data_thermometer_cleaned(max_idx:end, 2); data_thermometer_cleaned(1:3470, 2)];
-data_thermometer_90_to_25_voltage = [data_thermometer_cleaned(max_idx:end, 3); data_thermometer_cleaned(1:3470, 3)];
 
 figure
 plot(data_thermometer_90_to_25_temperature, data_thermometer_90_to_25_voltage)
@@ -165,7 +167,7 @@ ylabel("Vzdalenost d [mm]")
 % plot(data_belt_cleaned(:,2), data_belt_cleaned(:,1))
 %%
 
-data_belt_b = readmatrix("./data/pruzny_pas_b_Data.csv"); 
+data_belt_b = readmatrix("./data/pruzny_pas_b_Data_correct.csv"); 
 p_6b=polyfit(data_belt_b(:,7),(p_6(1)*data_belt_b(:,4)+p_6(2)),1);
 
 LinChar=p_6b(1).*(-10:10) +p_6b(2);
@@ -176,7 +178,7 @@ plot(-10:10, LinChar)
 title("Staticka charakteristika soustavy")
 xlabel("U [V]")
 ylabel("d [mm]")
-legend("Statickï¿½ charakteristika", "Aproximaï¿½nï¿½ pï¿½ï¿½mka");
+legend("Staticka charakteristika", "Aproximacni primka");
 %%
 data_belt_c = readmatrix("./data/pruzny_pas_kontrola.csv"); 
 data_belt_c_cleaned = data_belt_c(1:15538, [4:7]);%155538
@@ -191,7 +193,7 @@ plot(x,y)
 title("Staticka charakteristika soustavy")
 xlabel("U [V]")
 ylabel("d [mm]")
-legend("Statickï¿½ charakteristika", "Aproximaï¿½nï¿½ pï¿½ï¿½mka");
+legend("Staticka charakteristika", "Aproximacni primka");
 
 
 
@@ -210,7 +212,7 @@ plot(x,y, "LineWidth",1.3)
 title("Rozdil rychlosti motoru v zavislosti na budicim signalu")
 xlabel("Rozdil v budicim signalu [V]")
 ylabel("Rozdil rychlosti motoru [m\cdot s^{-1}]")
-legend("Statickï¿½ charakteristika prokluzu", "Aproximaï¿½nï¿½ pï¿½ï¿½mka");
+legend("Staticka charakteristika prokluzu", "Aproximacni primka");
 
 %%
 data_belt_chyba = readmatrix("./data/pruzny_pas_chyba_opak.csv");
