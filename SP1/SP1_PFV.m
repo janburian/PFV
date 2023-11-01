@@ -53,10 +53,10 @@ plot(x, data_thermometer_cleaned(:, 2), "-")
 hold on 
 plot(x, data_thermometer_cleaned(:, 3), "-")
 xlabel("Cas [s]")
-% ylabel("Teplota [°C]")
+% ylabel("Teplota [�C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena referencnim snimacem [°C]", "Napeti namerene polovodicovym snimacem U [V]")
+legend("Teplota namerena referencnim snimacem [�C]", "Napeti namerene polovodicovym snimacem U [V]")
 
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
@@ -71,7 +71,7 @@ figure
 plot(data_thermometer_cleaned(max_idx:end, 2), data_thermometer_cleaned(max_idx:end, 3))
 hold on
 plot(x, y)
-xlabel("Teplota namerena referencnim snimacem [°C]")
+xlabel("Teplota namerena referencnim snimacem [�C]")
 ylabel("Napeti namerene polovodicovym snimacem U [V]")
 title("Zavislost teploty na napeti")
 legend("Staticka charakteristika", "Aproximacni polynom")
@@ -80,10 +80,10 @@ y_inv=p_4(1) * data_therm2.^3 + p_4(2) * data_therm2.^2 + p_4(3) * data_therm2 +
 figure
 plot(linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned)),y_inv)
 xlabel("Cas [s]")
-ylabel("Teplota [°C]")
+ylabel("Teplota [�C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena polovodicovym snimacem T [°C]")
+legend("Teplota namerena polovodicovym snimacem T [�C]")
 
 % Opak chyba
 y_inv=y_inv(1:2000);
@@ -118,7 +118,7 @@ plot(data_shaft_cleaned(:, 3), data_shaft_cleaned(:, 1));
 hold on
 plot(x, y, 'LineWidth', 1.3)
 xlabel("Napeti na motor [V]")
-ylabel("Rychlost motoru [otacky\cdots^{-1}]")
+ylabel("Uhlova rychlost motoru [rad\cdots^{-1}]")
 title("Staticka charakteristika")
 legend("Staticka charakteristika", "Aproximacni primka")
 
@@ -160,43 +160,76 @@ ylabel("Vzdalenost d [mm]")
 % x = linspace(0, length(data_belt_cleaned) * Ts, length(data_belt_cleaned));
 % plot(data_belt_cleaned(:,2), data_belt_cleaned(:,1))
 %%
-data_belt_b = readmatrix("./data/pruzny_pas_b_Data_correct.csv"); 
+
+data_belt_b = readmatrix("./data/pruzny_pas_b_Data.csv"); 
+p_6b=polyfit(data_belt_b(:,7),(p_6(1)*data_belt_b(:,4)+p_6(2)),1);
+
+LinChar=p_6b(1).*(-10:10) +p_6b(2);
 figure
+hold on
 plot( data_belt_b(:,7),(p_6(1)*data_belt_b(:,4)+p_6(2)))
-title("Pokuz")
-
-
-%% 
-data_belt_test = readmatrix("./data/pruzny_pas_b_Data_correct.csv"); 
-figure
-plot(linspace(1, length(data_belt_test), 1), data_belt_test(:,7))
-title("Pokuz")
-
+plot(-10:10, LinChar)
+title("Staticka charakteristika soustavy")
+xlabel("U [V]")
+ylabel("d [mm]")
+legend("Statick� charakteristika", "Aproxima�n� p��mka");
 %%
 data_belt_c = readmatrix("./data/pruzny_pas_kontrola.csv"); 
-data_belt_c_cleaned = data_belt_c(1:15538,[4:7]);%155538
+data_belt_c_cleaned = data_belt_c(1:15538, [4:7]);%155538
 
-%x = linspace(0, length(data_belt_c_cleaned) * Ts, length(data_belt_c_cleaned));
+x=-1.5:0.1:1.5;
+y=polyfit(data_belt_c_cleaned(:,4),(3.02*data_belt_c_cleaned(:,3)+101.972),1);
+y=y(1)*x+y(2);
 figure
+hold on
+plot( data_belt_c_cleaned(:,4),(3.02*data_belt_c_cleaned(:,3)+101.972));
+plot(x,y)
+title("Staticka charakteristika soustavy")
+xlabel("U [V]")
+ylabel("d [mm]")
+legend("Statick� charakteristika", "Aproxima�n� p��mka");
+
+
+
+
+voltage_range = find(data_belt_c_cleaned(:,4) >-0.7 & data_belt_c_cleaned(:,4) < 1.18);
+LinChar=polyfit(data_belt_c_cleaned(voltage_range,4),data_belt_c_cleaned(voltage_range,1) - data_belt_c_cleaned(voltage_range,2),1);
+
+x=-0.7:0.1:1.2;
+y=LinChar(1)*x+LinChar(2);
+figure
+hold on
+
+
 plot( data_belt_c_cleaned(:,4),data_belt_c_cleaned(:,1) - data_belt_c_cleaned(:,2))
-%plot( data_belt_c_cleaned(:,1) - data_belt_c_cleaned(:,2),data_belt_c_cleaned(:,4))
+plot(x,y, "LineWidth",1.3)
+title("Rozdil rychlosti motoru v zavislosti na budicim signalu")
+xlabel("Rozdil v budicim signalu [V]")
+ylabel("Rozdil rychlosti motoru [m\cdot s^{-1}]")
+legend("Statick� charakteristika prokluzu", "Aproxima�n� p��mka");
 
-title("Prokluz")
-
+%%
+data_belt_chyba = readmatrix("./data/pruzny_pas_chyba_opak.csv");
+chyba_laser= data_belt_chyba(:,6);
+chyba_ind= p_6(1)*data_belt_chyba(:,7)+p_6(2);
+[mLaser, varLaser, DLaser, dLaser]=opak(chyba_laser,88.2, 125.6)
+[mInd, varInd, DInd, dInd]=opak(chyba_ind,88.2, 125.6)
 %% Indukcni snimac vzdalenosti typu PR6423 (Eddy current)
 distances_eddy = [0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]; % [mm]
-coeff = 13.3 / 3.3; 
-measured_values_eddy = coeff * [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
-%measured_values_eddy = [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
+coeff = 3.3 / 13.3; 
+%measured_values_eddy = -1/coeff * [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
+measured_values_eddy = [3.44, 3.14, 2.88, 2.62, 2.35, 2.12, 1.9, 1.75, 1.55, 1.29, 1.03]; % [V]
 
 p_eddy = polyfit(distances_eddy, measured_values_eddy, 1);
-p_eddy_2 = polyfit(measured_values_eddy,distances_eddy, 1);
-x = linspace(0.5, 2.5, 8); % Adapt n for resolution of graph
+p_eddy_2 = polyfit( measured_values_eddy,distances_eddy, 1);
+x = linspace(0.5, 2.5, 11); % Adapt n for resolution of graph
 y_eddy = p_eddy(1) * x + p_eddy(2);
-y_eddy_manufacturer = linspace(-2, -18, 8);
+y_eddy_manufacturer = -coeff*linspace(-18, -2, 11);
+
+p_eddy_prokluz=polyfit( x,y_eddy_manufacturer, 1);
 
 figure;
-scatter(distances_eddy, measured_values_eddy, '*', "blue")
+scatter(distances_eddy,measured_values_eddy, '*', "blue")
 hold on
 plot(x, y_eddy)
 hold on 
@@ -205,9 +238,9 @@ xlabel("d [mm]")
 ylabel("U [V]")
 title("Staticka charakteristika indukcniho snimace vzdalenosti")
 legend("Namerena data", "Aproximacni primka", "Staticka charakteristika dana vyrobcem")
-
+%%
 data_eddy = readmatrix("./data/eddy_5.csv");
-data_eddy_opak=p_eddy(1)*data_eddy(:,4)+p_eddy(2);
+data_eddy_opak=p_eddy_2(1)*data_eddy(:,4)+p_eddy_2(2);
 [mEddy,varEddy, DeltaEddy, dEddy]=opak(data_eddy_opak,0.5,2.5)
 
 %% Chyby opakovatelnosti
