@@ -57,10 +57,10 @@ plot(x, data_thermometer_cleaned(:, 2), "-")
 hold on 
 plot(x, data_thermometer_cleaned(:, 3), "-")
 xlabel("Cas [s]")
-% ylabel("Teplota [캜]")
+% ylabel("Teplota [째C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena referencnim snimacem [캜]", "Napeti namerene polovodicovym snimacem U [V]")
+legend("Teplota namerena referencnim snimacem [째C]", "Napeti namerene polovodicovym snimacem U [V]")
 
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
@@ -81,7 +81,7 @@ figure
 plot(data_thermometer_90_to_25_temperature, data_thermometer_90_to_25_voltage)
 hold on
 plot(x, y)
-xlabel("Teplota namerena referencnim snimacem [캜]")
+xlabel("Teplota namerena referencnim snimacem [째C]")
 ylabel("Napeti namerene polovodicovym snimacem U [V]")
 title("Zavislost teploty na napeti")
 legend("Staticka charakteristika", "Aproximacni polynom")
@@ -90,10 +90,10 @@ y_inv=p_4(1) * data_therm2.^3 + p_4(2) * data_therm2.^2 + p_4(3) * data_therm2 +
 figure
 plot(linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned)),y_inv)
 xlabel("Cas [s]")
-ylabel("Teplota [캜]")
+ylabel("Teplota [째C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena polovodicovym snimacem T [캜]")
+legend("Teplota namerena polovodicovym snimacem T [째C]")
 
 % Opak chyba
 y_inv=y_inv(1:2000);
@@ -171,6 +171,7 @@ ylabel("Vzdalenost d [mm]")
 % plot(data_belt_cleaned(:,2), data_belt_cleaned(:,1))
 %%
 
+%data_belt_b = readmatrix("./data/pruzny_pas_b_Data_correct.csv"); 
 data_belt_b = readmatrix("./data/pruzny_pas_b_Data_correct.csv"); 
 p_6b=polyfit(data_belt_b(:,7),(p_6(1)*data_belt_b(:,4)+p_6(2)),1);
 
@@ -194,6 +195,7 @@ figure
 hold on
 plot( data_belt_c_cleaned(:,4),(3.02*data_belt_c_cleaned(:,3)+101.972));
 plot(x,y)
+plot([0,0], [101.5,110], 'k--')
 title("Staticka charakteristika soustavy")
 xlabel("U [V]")
 ylabel("d [mm]")
