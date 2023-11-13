@@ -72,10 +72,25 @@ xlabel("t")
 legend("Budici napeti", "Rychlost hridele motoru", "Rychlost hridele setrvacniku")
 
 %% Teplomer
+data_thermometer = readmatrix("./data/teplomer_data_all.csv"); 
+data_thermometer_cleaned = data_thermometer(:,[3:5]); % without NaN values [..., temperature, ...]
+data_therm2=data_thermometer_cleaned(:,3);
+Ts = 0.1; % perioda vzorkovani
 
 
+% Zavislost teploty na napeti
+[max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
 
+data_thermometer_90_to_25_temperature = [data_thermometer_cleaned(max_idx:end, 2); flip(data_thermometer_cleaned(1:500, 2))];
+data_thermometer_90_to_25_voltage = [data_thermometer_cleaned(max_idx:end, 3); flip(data_thermometer_cleaned(1:500, 3))];
 
+x = linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned));
+
+figure
+plot(x, data_thermometer_90_to_25_temperature)
+xlabel("Teplota namerena referencnim snimacem [°C]")
+ylabel("Napeti namerene polovodicovym snimacem U [V]")
+title("Zavislost teploty na napeti")
 
 %% Eddy current
 
