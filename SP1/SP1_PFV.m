@@ -60,7 +60,7 @@ xlabel("Cas [s]")
 % ylabel("Teplota [째C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena referencnim snimacem [째C]", "Napeti namerene polovodicovym snimacem U [V]")
+legend("Teplota namerena referencnim snimacem [캜]", "Napeti namerene polovodicovym snimacem U [V]")
 
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
@@ -81,7 +81,7 @@ figure
 plot(data_thermometer_90_to_25_temperature, data_thermometer_90_to_25_voltage)
 hold on
 plot(x, y)
-xlabel("Teplota namerena referencnim snimacem [째C]")
+xlabel("Teplota namerena referencnim snimacem [캜]")
 ylabel("Napeti namerene polovodicovym snimacem U [V]")
 title("Zavislost teploty na napeti")
 legend("Staticka charakteristika", "Aproximacni polynom")
@@ -90,10 +90,10 @@ y_inv=p_4(1) * data_therm2.^3 + p_4(2) * data_therm2.^2 + p_4(3) * data_therm2 +
 figure
 plot(linspace(0, length(data_thermometer_cleaned) * Ts, length(data_thermometer_cleaned)),y_inv)
 xlabel("Cas [s]")
-ylabel("Teplota [째C]")
+ylabel("Teplota [캜]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
-legend("Teplota namerena polovodicovym snimacem T [째C]")
+legend("Teplota namerena polovodicovym snimacem T [캜]")
 
 % Opak chyba
 y_inv=y_inv(1:2000);
