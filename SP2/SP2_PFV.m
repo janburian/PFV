@@ -71,13 +71,29 @@ title("Impulsni charakteristika")
 data_shaft_freq = readmatrix("./data/hridel_frek_1.csv"); 
 data_shaft_freq_cleaned = data_shaft_freq(:,[4:7]);
 
-x = linspace(0, length(data_shaft_freq_cleaned) * Ts, length(data_shaft_freq_cleaned));
+x = linspace(0, length(data_shaft_freq_cleaned(2000:3000)) * Ts, length(data_shaft_freq_cleaned(2000:3000)));
 
 figure 
 hold on
-plot(x, data_shaft_freq_cleaned(:, 3)) % Budici napeti
-plot(x, data_shaft_freq_cleaned(:, 2)) % Rychlost hridele setrvacniku
-title("Frekvencni charakteristika")
+plot(x, data_shaft_freq_cleaned(2000:3000, 3)) % Budici napeti
+plot(x, data_shaft_freq_cleaned(2000:3000, 2)) % Rychlost hridele setrvacniku
+title("Frekvencni charakteristika 1")
+%xlabel("t")
+legend("Budici napeti", "Rychlost hridele setrvacniku")
+
+figure 
+hold on
+plot(x, data_shaft_freq_cleaned(6000:7000, 3)) % Budici napeti
+plot(x, data_shaft_freq_cleaned(6000:7000, 2)) % Rychlost hridele setrvacniku
+title("Frekvencni charakteristika 2")
+%xlabel("t")
+legend("Budici napeti", "Rychlost hridele setrvacniku")
+
+figure 
+hold on
+plot(x, data_shaft_freq_cleaned(11000:12000, 3)) % Budici napeti
+plot(x, data_shaft_freq_cleaned(11000:12000, 2)) % Rychlost hridele setrvacniku
+title("Frekvencni charakteristika 3")
 %xlabel("t")
 legend("Budici napeti", "Rychlost hridele setrvacniku")
 
@@ -154,3 +170,18 @@ plot(x, data_eddy_step_cleaned(:, 1))
 xlim([0 13])
 title("Prechodova charakteristika")
 xlabel("t")
+
+% Frevencni charakteristika
+data_eddy_freq = readmatrix("./data/Eddy_frek.csv"); 
+data_eddy_freq_cleaned = data_eddy_freq(:,[4:7]);
+
+x = linspace(0, length(data_eddy_freq_cleaned(1:400)) * Ts, length(data_eddy_freq_cleaned(1:400)));
+
+figure
+hold on
+plot(x, data_eddy_freq_cleaned(1:400, 3))
+%plot(x, data_eddy_freq_cleaned(:, 2))
+plot(x, data_eddy_freq_cleaned(1:400, 1))
+title("Frekvencni charakteristika")
+xlabel("t")
+
