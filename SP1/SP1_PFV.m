@@ -57,7 +57,7 @@ plot(x, data_thermometer_cleaned(:, 2), "-")
 hold on 
 plot(x, data_thermometer_cleaned(:, 3), "-")
 xlabel("Cas [s]")
-% ylabel("Teplota [Â°C]")
+% ylabel("Teplota [°C]")
 title("Vystup referencniho a polovodicoveho snimace")
 yline(60, '--', 'Odkryti vodni lazne');
 legend("Teplota namerena referencnim snimacem [°C]", "Napeti namerene polovodicovym snimacem U [V]")
