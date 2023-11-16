@@ -6,7 +6,7 @@ clear all
 % Prechodova charakteristika
 data_shaft_step = readmatrix("./data/hridel_step_1.csv"); 
 data_shaft_step_cleaned = data_shaft_step(:,[4:7]);
-Ts = 0.005; % TODO: spravna perioda vzorkovani? DONE: Asi jo!
+Ts = 0.005;
 x = linspace(0, length(data_shaft_step_cleaned) * Ts, length(data_shaft_step_cleaned));
 U_max = 5;
 normalization_step = 1 / U_max;
@@ -133,7 +133,7 @@ ylabel("Im")
 
 
 % Porovnani prechodovych charakteristik
-Ts=0.01;
+%Ts=0.01;
 [s,t]=step(sys,0:Ts:(length(data_shaft_step_cleaned_normalized(1940:2200, 3))-1)*Ts);
 figure
 hold on
@@ -152,9 +152,9 @@ data_induction_belt_step = readmatrix("./data/pruzny_pas_step_b2.csv");
 
 data_belt_step_cleaned = data_induction_belt_step(:,[4:7]);
 
-Ts = 0.01; % TODO: spravna perioda vzorkovani? 
+Ts = 0.01;
 x = linspace(0, length(data_belt_step_cleaned) * Ts, length(data_belt_step_cleaned));
-U_max = 5;
+U_max = 10;
 normalization_step = 1 / U_max;
 
 data_belt_step_cleaned_normalized = data_belt_step_cleaned * normalization_step;
@@ -162,18 +162,56 @@ data_belt_step_cleaned_normalized = data_belt_step_cleaned * normalization_step;
 figure
 hold on
 plot(x, data_belt_step_cleaned_normalized(:, 4)) 
-%plot(x, data_belt_step_cleaned_normalized(:, 1))
-%plot(x, data_belt_step_cleaned_normalized(:, 2))
+plot(x, data_belt_step_cleaned_normalized(:, 1))
+%plot(x, data_belt_step_cleaned_normalized(:, 3))
+plot(x, data_belt_step_cleaned_normalized(:, 2))
 %xlim([0 100])
 title("Prechodova charakteristika")
-xlabel("t")
+xlabel("t [s]")
 %legend("Budici napeti", "Rychlost hridele motoru", "Rychlost hridele setrvacniku")
+
+
+% Frekvencni charakteristika
+data_belt_freq = readmatrix("./data/pruzny_pas_freq_c2.csv");
+data_belt_freq_cleaned = data_belt_freq(:,[4:7]);
+
+x = linspace(0, length(data_belt_freq_cleaned) * Ts, length(data_belt_freq_cleaned));
+
+figure
+hold on
+plot(x, data_belt_freq_cleaned(:, 4)) 
+plot(x, data_belt_freq_cleaned(:, 1))
+%plot(x, data_belt_freq_cleaned(:, 3))
+plot(x, data_belt_freq_cleaned(:, 2))
+%xlim([0 100])
+title("Frekvencni charakteristika")
+xlabel("t [s]")
+xlim([0 100])
+
 
 % SC2FA
 numerator = [-40.198, 851.79];
 denominator = [1, 52.736, 168.38];
 
 sys = tf(numerator, denominator);
+
+data_belt_sc2fa = readmatrix("./data/pruzny_pas_sc2fa_1.csv");
+data_frek = data_belt_sc2fa(:,5:6);
+data_nyq = data_frek(find(data_belt_sc2fa(:,7)==1),:);
+
+x = linspace(0, length(data_nyq) * Ts, length(data_nyq)); 
+x_frek = linspace(0, length(data_belt_sc2fa)*Ts, length(data_belt_sc2fa)); 
+
+figure
+hold on
+plot(x, data_nyq(:,1))
+plot(x, data_nyq(:,2))
+plot(x_frek, data_belt_sc2fa(:,4))
+%nyquist(sys)
+%title("Nyquist diagram")
+xlabel("t [s]")
+%ylabel("Im")
+%grid on
 
 %% Teplomer
 data_thermometer = readmatrix("./data/teplomer_data_all.csv"); 
@@ -217,7 +255,6 @@ xlim([0 13])
 title("Prechodova charakteristika")
 xlabel("t [s]")
 ylabel("u(t), y(t)")
-
 
 % Frevencni charakteristika
 data_eddy_freq = readmatrix("./data/Eddy_frek_14112023_new.csv"); 
