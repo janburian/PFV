@@ -6,7 +6,7 @@ clear all
 % Prechodova charakteristika
 data_shaft_step = readmatrix("./data/hridel_step_1.csv"); 
 data_shaft_step_cleaned = data_shaft_step(:,[4:7]);
-Ts = 0.01; % TODO: spravna perioda vzorkovani? DONE: Asi jo!
+Ts = 0.005; % TODO: spravna perioda vzorkovani? DONE: Asi jo!
 x = linspace(0, length(data_shaft_step_cleaned) * Ts, length(data_shaft_step_cleaned));
 U_max = 5;
 normalization_step = 1 / U_max;
@@ -17,16 +17,18 @@ figure
 hold on
 plot(x, data_shaft_step_cleaned_normalized(:, 3))
 plot(x, data_shaft_step_cleaned_normalized(:, 2))
-xlim([0 78])
+xlim([0 50])
 title("Prechodova charakteristika")
-xlabel("t")
+xlabel("t [s]")
+ylabel("u(t), y(t)")
 legend("Budici napeti", "Rychlost hridele setrvacniku")
 
 figure
 plot(x, data_shaft_step_cleaned_normalized(:, 1))
-xlim([0 78])
+xlim([0 50])
 title("Prechodova charakteristika hridele motoru")
-xlabel("t")
+xlabel("t [s]")
+ylabel("y(t)")
 legend("Rychlost hridele motoru")
 %%
 ipt = findchangepts(data_shaft_step_cleaned_normalized(1:2100, 2));
@@ -50,10 +52,10 @@ legend("Budici napeti", "Rychlost hridele setrvacniku")
 % Impulsni charakteristika
 data_shaft_impulse = readmatrix("./data/hridel_imp_1.csv"); 
 data_shaft_impulse_cleaned = data_shaft_impulse(:,[4:7]);
-Ts = 0.01; % TODO: spravna perioda vzorkovani? 
+Ts = 0.005;
 U_max = 5;
 T_max = 0.04;
-normalization_impulse = 1 / (U_max * T_max); % TODO: normalizace
+normalization_impulse = 1 / (U_max * T_max);
 x = linspace(0, length(data_shaft_impulse_cleaned) * Ts, length(data_shaft_impulse_cleaned));
 
 data_shaft_impulse_cleaned_normalized = data_shaft_impulse_cleaned * normalization_impulse;
@@ -75,56 +77,74 @@ title("Impulsni charakteristika")
 % ylim([0 0.23])
 % xlim([23 27])
 
-% Frekvencni charakteristika TODO: vyextrahovat frekvence 
+% Frekvencni charakteristika
 data_shaft_freq = readmatrix("./data/hridel_frek_1.csv"); 
 data_shaft_freq_cleaned = data_shaft_freq(:,[4:7]);
 %%
-Ts=0.005;
-x = linspace(0, length(data_shaft_freq_cleaned(2000:3000)) * Ts, length(data_shaft_freq_cleaned(2000:3000)));
+Ts = 0.005;
+%x = linspace(0, length(data_shaft_freq_cleaned(2000:3000)) * Ts, length(data_shaft_freq_cleaned(2000:3000)));
 
 figure 
 hold on
 plot((2057:2257)*Ts-2057*Ts, data_shaft_freq_cleaned(2057:2257, 3)) % Budici napeti
 plot((2057:2257)*Ts-2057*Ts, data_shaft_freq_cleaned(2057:2257, 2)) % Rychlost hridele setrvacniku
-title("Frekvencni charakteristika 1")
-%xlabel("t")
+title("Frekvencni charakteristika (Amp = 1; f = 1 Hz)")
+xlabel("t [s]")
+ylabel("u(t), y(t)")
 legend("Budici napeti", "Rychlost hridele setrvacniku")
 
 figure 
 hold on
 plot((6400:6458)*Ts-6400*Ts, data_shaft_freq_cleaned(6400:6458, 3)) % Budici napeti
 plot((6400:6458)*Ts-6400*Ts, data_shaft_freq_cleaned(6400:6458, 2)) % Rychlost hridele setrvacniku
-title("Frekvencni charakteristika 2")
-%xlabel("t")
+title("Frekvencni charakteristika (Amp = 2; f = 3.5 Hz)")
+xlabel("t [s]")
+ylabel("u(t), y(t)")
 legend("Budici napeti", "Rychlost hridele setrvacniku")
 
 figure 
 hold on
 plot((14269:14320)*Ts-14269*Ts, data_shaft_freq_cleaned(14269:14320, 3)) % Budici napeti
 plot((14269:14320)*Ts-14269*Ts, data_shaft_freq_cleaned(14269:14320, 2)) % Rychlost hridele setrvacniku
-title("Frekvencni charakteristika 3")
-%xlabel("t")
+title("Frekvencni charakteristika (Amp = 1.5; f = 4 Hz)")
+xlabel("t [s]")
+ylabel("u(t), y(t)")
 legend("Budici napeti", "Rychlost hridele setrvacniku")
-
 
 %%
 % SC2FA
 numerator = [-8.1177, 332.74];
 denominator = [1, 13.025, 791.44];
 
-sys = tf(numerator, denominator)
+sys = tf(numerator, denominator);
 
 data_shaft_sc2fa = readmatrix("./data/hridel_sc2fa_1.csv");
-data_frek= data_shaft_sc2fa(:,5:6);
-data_nyq=data_frek(find(data_shaft_sc2fa(:,7)==1),:);
-plot(data_nyq(:,1), data_nyq(:,2))
+data_frek = data_shaft_sc2fa(:,5:6);
+data_nyq = data_frek(find(data_shaft_sc2fa(:,7)==1),:);
 
+figure
+hold on
+plot(data_nyq(:,1), data_nyq(:,2))
+%nyquist(sys)
+title("Nyquist diagram")
+xlabel("Re")
+ylabel("Im")
+%grid on
+
+
+% Porovnani prechodovych charakteristik
 Ts=0.01;
 [s,t]=step(sys,0:Ts:(length(data_shaft_step_cleaned_normalized(1940:2200, 3))-1)*Ts);
 figure
 hold on
 plot(0:Ts:(length(data_shaft_step_cleaned_normalized(1940:2200, 3))-1)*Ts, data_shaft_step_cleaned_normalized(1940:2200, 2))
 plot(t,s)
+title("Porovnani prechodovych charakteristik")
+xlim([0 2])
+xlabel("t [s]")
+ylabel("y (t)")
+
+
 %% Pruzny pas
 % Prechodova charakteristika
 data_laser_belt_step = readmatrix("./data/pruzny_pas_step_b1.csv");
@@ -147,7 +167,13 @@ plot(x, data_belt_step_cleaned_normalized(:, 4))
 %xlim([0 100])
 title("Prechodova charakteristika")
 xlabel("t")
-legend("Budici napeti", "Rychlost hridele motoru", "Rychlost hridele setrvacniku")
+%legend("Budici napeti", "Rychlost hridele motoru", "Rychlost hridele setrvacniku")
+
+% SC2FA
+numerator = [-40.198, 851.79];
+denominator = [1, 52.736, 168.38];
+
+sys = tf(numerator, denominator);
 
 %% Teplomer
 data_thermometer = readmatrix("./data/teplomer_data_all.csv"); 
@@ -157,9 +183,12 @@ Ts = 0.1; % perioda vzorkovani
 
 % Zavislost teploty na napeti
 [max_temp, max_idx] = max(data_thermometer_cleaned(:, 2)); 
+[min_temp, min_idx] = min(data_thermometer_cleaned(:, 2));
+
+%normalization = 1 / (max_temp - min_temp);
+
 data_thermometer_90_to_25_temperature = data_thermometer_cleaned(3460:max_idx+500, 2)/70 -data_thermometer_cleaned(3460, 2)/70;
 data_thermometer_90_to_25_voltage = data_thermometer_cleaned(3460:max_idx+500, 3)/10;
-
 
 x = linspace(0, length(data_thermometer_90_to_25_temperature) * Ts, length(data_thermometer_90_to_25_temperature));
 figure
@@ -167,13 +196,14 @@ hold on
 plot(x, data_thermometer_90_to_25_temperature)
 plot(x, data_thermometer_90_to_25_voltage)
 xlabel("t [s]")
-ylabel("Napeti namerene polovodicovym snimacem U [V]")
-title("Zavislost teploty na napeti")
+ylabel("y_1(t), y_2(t)")
+title("Prechodova charakteristika")
+
 %% Eddy current
 % Prechodova charakteristika
 data_eddy_step = readmatrix("./data/Eddy_step.csv"); 
 data_eddy_step_cleaned = data_eddy_step(:,[4:7]);
-Ts = 0.01; % TODO: spravna perioda vzorkovani? 
+Ts = 0.001;
 x = linspace(0, length(data_eddy_step_cleaned) * Ts, length(data_eddy_step_cleaned));
 U_max = 5;
 normalization_step = 1 / U_max;
@@ -185,19 +215,39 @@ plot(x, data_eddy_step_cleaned(:, 3))
 plot(x, data_eddy_step_cleaned(:, 1))
 xlim([0 13])
 title("Prechodova charakteristika")
-xlabel("t")
+xlabel("t [s]")
+ylabel("u(t), y(t)")
+
 
 % Frevencni charakteristika
-data_eddy_freq = readmatrix("./data/Eddy_frek.csv"); 
+data_eddy_freq = readmatrix("./data/Eddy_frek_14112023_new.csv"); 
 data_eddy_freq_cleaned = data_eddy_freq(:,[4:7]);
 
-x = linspace(0, length(data_eddy_freq_cleaned(1:400)) * Ts, length(data_eddy_freq_cleaned(1:400)));
+x = linspace(0, length(data_eddy_freq_cleaned) * Ts, length(data_eddy_freq_cleaned));
 
 figure
 hold on
-plot(x, data_eddy_freq_cleaned(1:400, 3))
-%plot(x, data_eddy_freq_cleaned(:, 2))
-plot(x, data_eddy_freq_cleaned(1:400, 1))
+plot(x, data_eddy_freq_cleaned(:, 3))
+plot(x, data_eddy_freq_cleaned(:, 2))
+plot(x, data_eddy_freq_cleaned(:, 1))
 title("Frekvencni charakteristika")
 xlabel("t")
 
+% Blok FRID
+data_eddy_FRID = readmatrix("./data/Eddy_FRID_freq.csv");
+data_eddy_FRID_cleaned = data_eddy_FRID(1:23924,[4:7]);
+
+x = linspace(0, length(data_eddy_FRID_cleaned) * Ts, length(data_eddy_FRID_cleaned));
+
+figure
+hold on
+plot(data_eddy_FRID_cleaned(:, 2), data_eddy_FRID_cleaned(:, 3))
+title("Nyquist diagram")
+xlabel("Re")
+ylabel("Im")
+
+
+figure
+plot(x, data_eddy_FRID_cleaned(:, 1))
+title("Eddy current (FRID)")
+ylabel("Frekvence")
