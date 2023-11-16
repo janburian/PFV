@@ -131,6 +131,9 @@ xlabel("Re")
 ylabel("Im")
 %grid on
 
+figure;
+bode(sys);
+
 
 % Porovnani prechodovych charakteristik
 %Ts=0.01;
@@ -140,7 +143,6 @@ hold on
 plot(0:Ts:(length(data_shaft_step_cleaned_normalized(1940:2200, 3))-1)*Ts, data_shaft_step_cleaned_normalized(1940:2200, 2))
 plot(t,s)
 title("Porovnani prechodovych charakteristik")
-xlim([0 2])
 xlabel("t [s]")
 ylabel("y (t)")
 
