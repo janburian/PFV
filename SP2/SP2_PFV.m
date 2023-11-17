@@ -122,13 +122,16 @@ data_shaft_sc2fa = readmatrix("./data/hridel_sc2fa_1.csv");
 data_frek = data_shaft_sc2fa(:,5:6);
 data_nyq = data_frek(find(data_shaft_sc2fa(:,7)==1),:);
 
+l=59944;
 figure
 hold on
-plot(data_nyq(:,1), data_nyq(:,2))
+plot(data_nyq(401:l,1), data_nyq(401:l,2))
+plot(data_nyq(l+1:end,1), data_nyq(l+1:end,2))
 %nyquist(sys)
-title("Nyquist diagram")
+title("Nyquistův diagram")
 xlabel("Re")
 ylabel("Im")
+legend("Naměřená data", "Křivka odhadnutá blokem sc2fa")
 %grid on
 
 figure;
@@ -201,20 +204,28 @@ data_belt_sc2fa = readmatrix("./data/pruzny_pas_sc2fa_1.csv");
 data_frek = data_belt_sc2fa(:,5:6);
 data_nyq = data_frek(find(data_belt_sc2fa(:,7)==1),:);
 
-x = linspace(0, length(data_nyq) * Ts, length(data_nyq)); 
+%x = linspace(0, length(data_nyq) * Ts, length(data_nyq)); 
 x_frek = linspace(0, length(data_belt_sc2fa)*Ts, length(data_belt_sc2fa)); 
 
 figure
 hold on
-plot(x, data_nyq(:,1))
-plot(x, data_nyq(:,2))
-plot(x_frek, data_belt_sc2fa(:,4))
+plot(0:Ts:100249*Ts, data_nyq(1:100250,1))
+plot(0:Ts:100249*Ts, data_nyq(1:100250,2))
+plot(0:Ts:100249*Ts, data_belt_sc2fa(1:100250,4))
 %nyquist(sys)
 %title("Nyquist diagram")
 xlabel("t [s]")
+
 %ylabel("Im")
 %grid on
-
+%%
+figure
+hold on
+plot(data_nyq(601:100250,1),data_nyq(601:100250,2))
+plot(data_nyq(102100:end,1),data_nyq(102100:end,2))
+legend("Naměřená data", "Křivka odhadnutá blokem sc2fa")
+xlabel("Re")
+ylabel("Im")
 %% Teplomer
 data_thermometer = readmatrix("./data/teplomer_data_all.csv"); 
 data_thermometer_cleaned = data_thermometer(:,[3:5]); % without NaN values [..., temperature, ...]
