@@ -18,18 +18,20 @@ hold on
 plot(x, data_shaft_step_cleaned_normalized(:, 3))
 plot(x, data_shaft_step_cleaned_normalized(:, 2))
 xlim([0 50])
-title("Prechodova charakteristika")
+title("Prechodova charakteristika (hridel)")
 xlabel("t [s]")
 ylabel("u(t), y(t)")
 legend("Budici napeti", "Rychlost hridele setrvacniku")
 
 figure
+hold on
+plot(x, data_shaft_step_cleaned_normalized(:, 3))
 plot(x, data_shaft_step_cleaned_normalized(:, 1))
 xlim([0 50])
-title("Prechodova charakteristika hridele motoru")
+title("Prechodova charakteristika (motor)")
 xlabel("t [s]")
 ylabel("y(t)")
-legend("Rychlost hridele motoru")
+legend("Budici napeti", "Rychlost hridele motoru")
 %%
 ipt = findchangepts(data_shaft_step_cleaned_normalized(1:2100, 2));
 r=-data_shaft_step_cleaned_normalized(ipt+1, 2)+data_shaft_step_cleaned_normalized(ipt-1, 2);
@@ -149,6 +151,7 @@ hold on
 plot(0:Ts:(length(data_shaft_step_cleaned_normalized(1940:2200, 3))-1)*Ts, data_shaft_step_cleaned_normalized(1940:2200, 2))
 plot(t,s)
 title("Porovnani prechodovych charakteristik")
+legend("Namerena data", "Identifikovana data")
 xlabel("t [s]")
 ylabel("y (t)")
 
@@ -218,7 +221,8 @@ plot(0:Ts:100249*Ts, data_nyq(1:100250,1))
 plot(0:Ts:100249*Ts, data_nyq(1:100250,2))
 plot(0:Ts:100249*Ts, data_belt_sc2fa(1:100250,4))
 %nyquist(sys)
-%title("Nyquist diagram")
+title("Mereni frekvencni charakteristiky pomoci sc2fa bloku")
+legend("Re", "Im", "Frekvence")
 xlabel("t [s]")
 
 %ylabel("Im")
@@ -228,7 +232,7 @@ figure
 hold on
 plot(data_nyq(601:100250,1),data_nyq(601:100250,2))
 plot(data_nyq(102100:end,1),data_nyq(102100:end,2))
-legend("Naměřená data", "Křivka odhadnutá blokem sc2fa")
+legend("Namerena data", "Krivka odhadnuta blokem sc2fa")
 xlabel("Re")
 ylabel("Im")
 %% Teplomer
@@ -310,5 +314,6 @@ ylabel("Im")
 
 figure
 plot(x, data_eddy_FRID_cleaned(:, 1))
-title("Eddy current (FRID)")
+title("Blok FRID (Eddy current)")
 ylabel("Frekvence")
+xlabel("t [s]")
