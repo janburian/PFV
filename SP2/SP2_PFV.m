@@ -54,7 +54,7 @@ data_shaft_impulse = readmatrix("./data/hridel_imp_1.csv");
 data_shaft_impulse_cleaned = data_shaft_impulse(:,[4:7]);
 Ts = 0.005;
 U_max = 5;
-T_max = 0.04;
+T_max = 0.03;
 normalization_impulse = 1 / (U_max * T_max);
 x = linspace(0, length(data_shaft_impulse_cleaned) * Ts, length(data_shaft_impulse_cleaned));
 
@@ -66,8 +66,11 @@ plot(x, data_shaft_impulse_cleaned_normalized(:, 3))
 %plot(x, data_shaft_impulse_cleaned_normalized(:, 1))
 plot(x, data_shaft_impulse_cleaned_normalized(:, 2))
 title("Impulsni charakteristika")
-% ylim([-0.2 0.25])
-% xlim([20 60])
+ylim([-0.9 1.7])
+xlim([10 30])
+xlabel("t[s]")
+ylabel("u(t),y(t)")
+legend("Budici napeti", "Rychlost hridele setrvacniku")
 
 % figure
 % hold on
@@ -128,10 +131,10 @@ hold on
 plot(data_nyq(401:l,1), data_nyq(401:l,2))
 plot(data_nyq(l+1:end,1), data_nyq(l+1:end,2))
 %nyquist(sys)
-title("Nyquistův diagram")
+title("Nyquistuv diagram")
 xlabel("Re")
 ylabel("Im")
-legend("Naměřená data", "Křivka odhadnutá blokem sc2fa")
+legend("Namerena data", "Krivka odhadnuta blokem sc2fa")
 %grid on
 
 figure;
@@ -155,11 +158,11 @@ ylabel("y (t)")
 data_laser_belt_step = readmatrix("./data/pruzny_pas_step_b1.csv");
 data_induction_belt_step = readmatrix("./data/pruzny_pas_step_b2.csv"); 
 
-data_belt_step_cleaned = data_induction_belt_step(:,[4:7]);
+data_belt_step_cleaned = data_laser_belt_step(:,[4:7]);
 
 Ts = 0.01;
 x = linspace(0, length(data_belt_step_cleaned) * Ts, length(data_belt_step_cleaned));
-U_max = 10;
+U_max = 1;
 normalization_step = 1 / U_max;
 
 data_belt_step_cleaned_normalized = data_belt_step_cleaned * normalization_step;
@@ -167,12 +170,14 @@ data_belt_step_cleaned_normalized = data_belt_step_cleaned * normalization_step;
 figure
 hold on
 plot(x, data_belt_step_cleaned_normalized(:, 4)) 
-plot(x, data_belt_step_cleaned_normalized(:, 1))
-%plot(x, data_belt_step_cleaned_normalized(:, 3))
-plot(x, data_belt_step_cleaned_normalized(:, 2))
+%plot(x, data_belt_step_cleaned_normalized(:, 1))
+plot(x, data_belt_step_cleaned_normalized(:, 3)-109.6)
+%plot(x, data_belt_step_cleaned_normalized(:, 2))
 %xlim([0 100])
 title("Prechodova charakteristika")
 xlabel("t [s]")
+ylabel("u(t), y(t)")
+legend("Budici napeti", "Vzdalenost kladky")
 %legend("Budici napeti", "Rychlost hridele motoru", "Rychlost hridele setrvacniku")
 
 
@@ -184,8 +189,8 @@ x = linspace(0, length(data_belt_freq_cleaned) * Ts, length(data_belt_freq_clean
 
 figure
 hold on
-plot(x, data_belt_freq_cleaned(:, 4)) 
-plot(x, data_belt_freq_cleaned(:, 1))
+%plot(x, data_belt_freq_cleaned(:, 4)) 
+plot(x, data_belt_freq_cleaned(:, 1)-110.36)
 %plot(x, data_belt_freq_cleaned(:, 3))
 plot(x, data_belt_freq_cleaned(:, 2))
 %xlim([0 100])
@@ -261,29 +266,35 @@ normalization_step = 1 / U_max;
 
 figure
 hold on
-plot(x, data_eddy_step_cleaned(:, 3))
+plot(x, (data_eddy_step_cleaned(:, 3)-0.5)*5)
 %plot(x, data_eddy_step_cleaned(:, 2))
-plot(x, data_eddy_step_cleaned(:, 1))
-xlim([0 13])
+plot(x, -(data_eddy_step_cleaned(:, 1)-2.27)*5)
+xlim([0 1.5])
+ylim([-2.2 2.2])
 title("Prechodova charakteristika")
 xlabel("t [s]")
 ylabel("u(t), y(t)")
+legend("Budici napeti", "Vystup senzoru")
+
+data_ident=[(data_eddy_step_cleaned(:, 3)-0.5) -(data_eddy_step_cleaned(:, 1)-2.27)];
 
 % Frevencni charakteristika
 data_eddy_freq = readmatrix("./data/Eddy_frek_14112023_new.csv"); 
 data_eddy_freq_cleaned = data_eddy_freq(:,[4:7]);
 
+
+
 x = linspace(0, length(data_eddy_freq_cleaned) * Ts, length(data_eddy_freq_cleaned));
 
 figure
 hold on
-plot(x, data_eddy_freq_cleaned(:, 3))
-plot(x, data_eddy_freq_cleaned(:, 2))
-plot(x, data_eddy_freq_cleaned(:, 1))
+plot(x, data_eddy_freq_cleaned(:, 3)-0.5)
+%plot(x, data_eddy_freq_cleaned(:, 2)+5)
+plot(x, data_eddy_freq_cleaned(:, 1)-2)
 title("Frekvencni charakteristika")
 xlabel("t")
 
-% Blok FRID
+%% Blok FRID
 data_eddy_FRID = readmatrix("./data/Eddy_FRID_freq.csv");
 data_eddy_FRID_cleaned = data_eddy_FRID(1:23924,[4:7]);
 
