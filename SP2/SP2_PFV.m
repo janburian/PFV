@@ -65,7 +65,7 @@ neighborhood_size = 2;
 neighborhood_indices = given_point_index - neighborhood_size:given_point_index + neighborhood_size;
 
 % Fit a linear function to the neighborhood
-coefficients = polyfit(x_data(neighborhood_indices), y_data(neighborhood_indices), 1);
+coefficients = polyfit(x_data(neighborhood_indices), y_data(neighborhood_indices)', 1);
 tangent_line = polyval(coefficients, x_data);
 
 % Plot the data and the tangent line
@@ -180,9 +180,34 @@ ylabel("Im")
 legend("Namerena data", "Krivka odhadnuta blokem sc2fa")
 %grid on
 
+%% Bode diagram
+magnitudes_measurements = sqrt(data_nyq(401:l,1).^2 + data_nyq(401:l,2) .^2);
+phases_measurements = atan2(data_nyq(401:l,1), data_nyq(401:l,2)) * (180 / pi); 
+omega = logspace(-2, 3, length(magnitudes_measurements)); % Frequency vector in logarithmic scale
+% Bode plot
 figure;
-bode(sys);
 
+% Magnitude plot
+subplot(2, 1, 1);
+hold on
+semilogx(omega, 20 * log10(magnitudes_measurements));
+bodemag(sys)
+title('Bode Plot - Magnitude');
+xlabel('Frequency (rad/s)');
+ylabel('Magnitude (dB)');
+grid on;
+
+% Phase plot
+subplot(2, 1, 2);
+hold on
+semilogx(omega, phases_measurements);
+h = bodeplot(sys);
+setoptions(h,'MagVisible','off');
+title('Bode Plot - Phase');
+xlabel('Frequency (rad/s)');
+ylabel('Phase (degrees)');
+grid on;
+%%
 
 % Porovnani prechodovych charakteristik
 %Ts=0.01;
@@ -238,7 +263,7 @@ neighborhood_size = 2;
 neighborhood_indices = given_point_index - neighborhood_size:given_point_index + neighborhood_size;
 
 % Fit a linear function to the neighborhood
-coefficients = polyfit(x_data(neighborhood_indices), y_data(neighborhood_indices), 1);
+coefficients = polyfit(x_data(neighborhood_indices), y_data(neighborhood_indices)', 1);
 tangent_line = polyval(coefficients, x_data);
 
 % Plot the data and the tangent line
@@ -376,7 +401,7 @@ neighborhood_size = 2;
 neighborhood_indices = given_point_index - neighborhood_size:given_point_index + neighborhood_size;
 
 % Fit a linear function to the neighborhood
-coefficients = polyfit(x_data(neighborhood_indices), y_data(neighborhood_indices), 1);
+coefficients = polyfit(x_data(neighborhood_indices), y_data(neighborhood_indices)', 1);
 tangent_line = polyval(coefficients, x_data);
 
 % Plot the data and the tangent line
@@ -399,10 +424,6 @@ ylabel("u(t), y(t)")
 legend("Budici napeti", "Vystup senzoru","\sigma_{max}","D","T_u","\sigma_{5%}")
 grid on;
 hold off;
-
-
-
-
 
 
 data_ident=[(data_eddy_step_cleaned(:, 3)-0.5) -(data_eddy_step_cleaned(:, 1)-2.27)];
@@ -435,7 +456,7 @@ n=2000;
 figure
 hold on
 plot(data_eddy_FRID_cleaned(n:end, 2), data_eddy_FRID_cleaned(n:end, 3))
-title("Nyquist diagram")
+title("Nyquistuv diagram")
 xlabel("Re")
 ylabel("Im")
 
