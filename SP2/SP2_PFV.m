@@ -181,9 +181,12 @@ legend("Namerena data", "Krivka odhadnuta blokem sc2fa")
 %grid on
 
 %% Bode diagram
+data_freq = data_shaft_sc2fa(:,4);
+omega = data_freq(find(data_shaft_sc2fa(:,7)==1),:);
 magnitudes_measurements = sqrt(data_nyq(401:l,1).^2 + data_nyq(401:l,2) .^2);
 phases_measurements = atan2(data_nyq(401:l,1), data_nyq(401:l,2)) * (180 / pi); 
-omega = logspace(-2, 3, length(magnitudes_measurements)); % Frequency vector in logarithmic scale
+omega = omega(401:l,1);
+%omega = logspace(-2, 3, length(magnitudes_measurements)); % Frequency vector in logarithmic scale TODO: change this
 % Bode plot
 figure;
 
