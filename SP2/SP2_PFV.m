@@ -198,6 +198,8 @@ plot(x, data_belt_freq_cleaned(:, 1)-110.36)
 plot(x, data_belt_freq_cleaned(:, 2))
 %xlim([0 100])
 title("Frekvencni charakteristika")
+legend("Budici napeti", "Odezva")
+ylabel("u(t), y(t)")
 xlabel("t [s]")
 xlim([0 100])
 
@@ -296,7 +298,9 @@ plot(x, data_eddy_freq_cleaned(:, 3)-0.5)
 %plot(x, data_eddy_freq_cleaned(:, 2)+5)
 plot(x, data_eddy_freq_cleaned(:, 1)-2)
 title("Frekvencni charakteristika")
-xlabel("t")
+legend("Budici napeti", "Odezva")
+ylabel("u(t), y(t)")
+xlabel("t [s]")
 
 %% Blok FRID
 data_eddy_FRID = readmatrix("./data/Eddy_FRID_freq.csv");
