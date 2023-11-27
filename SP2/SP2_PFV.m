@@ -32,7 +32,7 @@ title("Prechodova charakteristika (motor)")
 xlabel("t [s]")
 ylabel("y(t)")
 legend("Budici napeti", "Rychlost hridele motoru")
-%%
+%{
 ipt = findchangepts(data_shaft_step_cleaned_normalized(1:2100, 2));
 r=-data_shaft_step_cleaned_normalized(ipt+1, 2)+data_shaft_step_cleaned_normalized(ipt-1, 2);
 p1=-[10*(x(ipt-1)-x(ipt+1))-x(ipt);10*r+data_shaft_step_cleaned_normalized(ipt)];
@@ -50,7 +50,7 @@ title("Prechodova charakteristika")
 xlabel("t")
 legend("Budici napeti", "Rychlost hridele setrvacniku")
 
-
+%}
 %%
 % Sample data points
 x_data = x(1:12/Ts);
@@ -75,8 +75,8 @@ plot(x,data_shaft_step_cleaned_normalized(:, 3))
 plot(x_data, y_data, 'DisplayName', 'Data');
 [v,i]=max(y_data);
 scatter((i-1)*Ts,v,'gx');
-scatter(13.885,0,'bo');
-scatter(15.76,4.198,'ko');
+scatter(9.709,0,'bo');
+scatter(10.05,0.694,'ko');
 yline(mean(y_data(end-100:end))*0.95,'g--')
 yline(mean(y_data(end-100:end))*1.05,'g--')
 plot(x_data, tangent_line,'m');
@@ -115,6 +115,52 @@ xlabel("t[s]")
 ylabel("u(t),y(t)")
 legend("Budici napeti", "Rychlost hridele setrvacniku")
 
+
+%%
+% Sample data points
+x_data = x(1:13.5/Ts);
+y_data = data_shaft_impulse_cleaned_normalized(:, 2);
+y_data=y_data(1:13.5/Ts);
+% Point at which to draw the tangent
+%ipt = findchangepts(data_shaft_step_cleaned_normalized(1:2100, 2));
+given_point_index = findchangepts(y_data); % Adjust as needed
+
+% Define a neighborhood around the given point
+neighborhood_size = 2;
+neighborhood_indices = given_point_index - neighborhood_size:given_point_index + neighborhood_size;
+
+% Fit a linear function to the neighborhood
+coefficients = polyfit(x_data(neighborhood_indices), y_data(neighborhood_indices)', 1);
+tangent_line = polyval(coefficients, x_data);
+
+% Plot the data and the tangent line
+figure;
+hold on;
+plot(x,data_shaft_impulse_cleaned_normalized(:, 3))
+plot(x_data, y_data, 'DisplayName', 'Data');
+[v,i]=max(y_data);
+scatter((i-1)*Ts,v,'gx');
+scatter(12.17,0,'bo');
+scatter(12.55,1.049,'ko');
+yline(mean(y_data(end-100:end))*0.95,'g--')
+yline(mean(y_data(end-100:end))*1.05,'g--')
+plot(x_data, tangent_line,'m');
+xlim([11.5 13.5])
+ylim([-0.2 1.8])
+title("Prechodova charakteristika")
+xlabel("t [s]")
+ylabel("u(t), y(t)")
+legend("Budici napeti", "Vystup senzoru","\sigma_{max}","D","T_u","\sigma_{5%}")
+grid on;
+hold off;
+
+
+
+
+
+
+
+%% 
 % figure
 % hold on
 % plot(x, data_shaft_impulse_cleaned(:, 3))
@@ -357,8 +403,8 @@ Ts = 0.1; % perioda vzorkovani
 
 %normalization = 1 / (max_temp - min_temp);
 
-data_thermometer_90_to_25_temperature = data_thermometer_cleaned(3460:max_idx+500, 2)/70 -data_thermometer_cleaned(3460, 2)/70;
-data_thermometer_90_to_25_voltage = data_thermometer_cleaned(3460:max_idx+500, 3)/10;
+data_thermometer_90_to_25_temperature = data_thermometer_cleaned(3460:max_idx+100, 2)/70 -data_thermometer_cleaned(3460, 2)/70;
+data_thermometer_90_to_25_voltage = data_thermometer_cleaned(3460:max_idx+100, 3)/10;
 
 x = linspace(0, length(data_thermometer_90_to_25_temperature) * Ts, length(data_thermometer_90_to_25_temperature));
 figure
@@ -369,7 +415,57 @@ xlabel("t [s]")
 ylabel("y_1(t), y_2(t)")
 title("Prechodova charakteristika")
 
+
+%%
+% Sample data points
+x_data = x;
+y_data = data_thermometer_90_to_25_temperature;
+%y_data=y_data(1:17/Ts);
+% Point at which to draw the tangent
+%ipt = findchangepts(data_shaft_step_cleaned_normalized(1:2100, 2));
+given_point_index = findchangepts(y_data)-45; % Adjust as needed
+
+% Define a neighborhood around the given point
+neighborhood_size = 2;
+neighborhood_indices = given_point_index - neighborhood_size:given_point_index + neighborhood_size;
+
+% Fit a linear function to the neighborhood
+coefficients = polyfit(x_data(neighborhood_indices), y_data(neighborhood_indices)', 1);
+tangent_line = polyval(coefficients, x_data);
+
+% Plot the data and the tangent line
+figure;
+hold on;
+plot(x, data_thermometer_90_to_25_voltage)
+plot(x_data, y_data, 'DisplayName', 'Data');
+[v,i]=max(y_data);
+scatter((i-1)*Ts,v,'gx');
+scatter(2.205,0,'bo');
+scatter(20.45,0.8979,'ko');
+yline(mean(y_data(end-100:end))*0.95,'g--')
+xline(1.203,'k--')
+yline(mean(y_data(end-100:end))*1.05,'g--')
+plot(x_data, tangent_line,'m');
+%xlim([13 17])
+ylim([-0.1 1.1])
+title("Prechodova charakteristika")
+xlabel("t [s]")
+ylabel("u(t), y(t)")
+legend("Budici napeti", "Vystup senzoru","\sigma_{max}","D","T_u","\sigma_{5%}")
+grid on;
+hold off;
+
+
+
+
+
+
 %% Eddy current
+% model
+num=1.0e+06 *[0.1781 4.4089];
+den=[1 91.36 1.507e05 3.158e06];
+d=0.003;
+model=tf(num,den,'Inputdelay',d);
 % Prechodova charakteristika
 data_eddy_step = readmatrix("./data/Eddy_step.csv"); 
 data_eddy_step_cleaned = data_eddy_step(:,4:7);
@@ -392,9 +488,9 @@ legend("Budici napeti", "Vystup senzoru")
 %}
 
 % Sample data points
-x_data = x(1:150);
+x_data = x(1:190);
 y_data = -(data_eddy_step_cleaned(:, 1)-2.27)*5;
-y_data=y_data(1:150);
+y_data=y_data(1:190);
 % Point at which to draw the tangent
 %ipt = findchangepts(data_shaft_step_cleaned_normalized(1:2100, 2));
 given_point_index = findchangepts(y_data); % Adjust as needed
@@ -428,9 +524,20 @@ legend("Budici napeti", "Vystup senzoru","\sigma_{max}","D","T_u","\sigma_{5%}")
 grid on;
 hold off;
 
-
-data_ident=[(data_eddy_step_cleaned(:, 3)-0.5) -(data_eddy_step_cleaned(:, 1)-2.27)];
-
+%% porovnani prechodu
+[a,b]=step(model);
+figure
+hold on
+plot(0:Ts:(length(data_eddy_step_cleaned(0.005/Ts:end, 3))-1)*Ts, (data_eddy_step_cleaned(0.005/Ts:end, 3)-0.5)*5, 'm')
+plot(x_data(1:end-0.006/Ts+1), y_data(0.006/Ts:end));
+%step(model)
+plot(b,a,'b--')
+xlim([0 0.15])
+ylim([-0.2 2.2])
+ylabel("u(t),y(t)")
+xlabel("t[s]")
+title("Porovnani namerene prechodove charakteristiky a charakteristiky modelu")
+legend("Vstupni signal", "Namerena data", "Vystup modelu")
 %% Frevencni charakteristika
 data_eddy_freq = readmatrix("./data/Eddy_frek_14112023_new.csv"); 
 data_eddy_freq_cleaned = data_eddy_freq(:,[4:7]);
@@ -450,6 +557,9 @@ ylabel("u(t), y(t)")
 xlabel("t [s]")
 
 %% Blok FRID
+
+[re,im,w]=nyquist(model);
+[mag,phase,wout] = bode(model);
 data_eddy_FRID = readmatrix("./data/Eddy_FRID_freq.csv");
 data_eddy_FRID_cleaned = data_eddy_FRID(1:23924,[4:7]);
 
@@ -463,6 +573,14 @@ title("Nyquistuv diagram")
 xlabel("Re")
 ylabel("Im")
 
+figure
+hold on
+plot(data_eddy_FRID_cleaned(n:end, 2), data_eddy_FRID_cleaned(n:end, 3))
+plot(squeeze(re),squeeze(im))
+title("Nyquistuv diagram")
+xlabel("Re")
+ylabel("Im")
+legend("Namerena data", "Identifikovany model")
 %{
 figure
 plot(x, data_eddy_FRID_cleaned(:, 1))
