@@ -227,10 +227,10 @@ legend("Namerena data", "Krivka odhadnuta blokem sc2fa")
 %grid on
 
 %% Bode diagram
-data_freq = data_shaft_sc2fa(:,4);
+data_freq = data_shaft_sc2fa(:,4)*10;
 omega = data_freq(find(data_shaft_sc2fa(:,7)==1),:);
 magnitudes_measurements = sqrt(data_nyq(401:l,1).^2 + data_nyq(401:l,2) .^2);
-phases_measurements = atan2(data_nyq(401:l,1), data_nyq(401:l,2)) * (180 / pi); 
+phases_measurements = atan2(data_nyq(401:l,2), data_nyq(401:l,1)) * (180 / pi); 
 omega = omega(401:l,1);
 %omega = logspace(-2, 3, length(magnitudes_measurements)); % Frequency vector in logarithmic scale TODO: change this
 % Bode plot
@@ -239,22 +239,25 @@ figure;
 % Magnitude plot
 subplot(2, 1, 1);
 hold on
-semilogx(omega, 20 * log10(magnitudes_measurements));
-bodemag(sys)
+semilogx(omega, 20 * log10(magnitudes_measurements),'k');
+bodemag(sys,omega)
 title('Bode Plot - Magnitude');
-xlabel('Frequency (rad/s)');
-ylabel('Magnitude (dB)');
+xlabel('Frequency ');
+ylabel('Magnitude ');
 grid on;
 
 % Phase plot
 subplot(2, 1, 2);
 hold on
-semilogx(omega, phases_measurements);
-h = bodeplot(sys);
+
+h = bodeplot(sys,omega);
+
 setoptions(h,'MagVisible','off');
+semilogx(omega, unwrap(phases_measurements)+360,'k');
+ylim([-180 360])
 title('Bode Plot - Phase');
-xlabel('Frequency (rad/s)');
-ylabel('Phase (degrees)');
+xlabel('Frequency ');
+ylabel('Phase ');
 grid on;
 %%
 
@@ -365,9 +368,10 @@ denominator = [1, 52.736, 168.38];
 sys = tf(numerator, denominator);
 
 data_belt_sc2fa = readmatrix("./data/pruzny_pas_sc2fa_1.csv");
-data_frek = data_belt_sc2fa(:,5:6);
-data_nyq = data_frek(find(data_belt_sc2fa(:,7)==1),:);
+data_frek = data_belt_sc2fa(:,4:6);
+data_nyq = data_frek(find(data_belt_sc2fa(:,7)==1),2:3);
 
+frek_bode=data_frek(find(data_belt_sc2fa(:,7)==1),1);
 %x = linspace(0, length(data_nyq) * Ts, length(data_nyq)); 
 x_frek = linspace(0, length(data_belt_sc2fa)*Ts, length(data_belt_sc2fa)); 
 
@@ -391,6 +395,44 @@ plot(data_nyq(102100:end,1),data_nyq(102100:end,2))
 legend("Namerena data", "Krivka odhadnuta blokem sc2fa")
 xlabel("Re")
 ylabel("Im")
+
+%% Bode diagram
+data_freq = frek_bode(601:100250);
+omega = data_freq;
+magnitudes_measurements = sqrt(data_nyq(601:100250,2).^2 + data_nyq(601:100250,1) .^2);
+phases_measurements = atan2(data_nyq(601:100250,2), data_nyq(601:100250,1)) * (180 / pi); 
+%omega = omega(401:l,1);
+%omega = logspace(-2, 3, length(magnitudes_measurements)); % Frequency vector in logarithmic scale TODO: change this
+% Bode plot
+figure;
+
+% Magnitude plot
+subplot(2, 1, 1);
+hold on
+semilogx(omega, 20 * log10(magnitudes_measurements),'k');
+bodemag(sys,omega)
+scatter(1,1.7379,'xm');
+scatter(3.5,-4.7127,'xm');
+scatter(6,-7.5557,'xm');
+title('Bode Plot - Magnitude');
+xlabel('Frequency ');
+ylabel('Magnitude ');
+grid on;
+
+% Phase plot
+subplot(2, 1, 2);
+hold on
+
+h = bodeplot(sys,omega);
+
+setoptions(h,'MagVisible','off');
+semilogx(omega, unwrap(phases_measurements)+360,'k');
+scatter(6,216,'xm');
+ylim([220 380])
+title('Bode Plot - Phase');
+xlabel('Frequency ');
+ylabel('Phase ');
+grid on;
 %% Teplomer
 data_thermometer = readmatrix("./data/teplomer_data_all.csv"); 
 data_thermometer_cleaned = data_thermometer(:,[3:5]); % without NaN values [..., temperature, ...]
@@ -556,6 +598,8 @@ legend("Budici napeti", "Odezva")
 ylabel("u(t), y(t)")
 xlabel("t [s]")
 
+
+
 %% Blok FRID
 
 [re,im,w]=nyquist(model);
@@ -588,3 +632,38 @@ title("Blok FRID (Eddy current)")
 ylabel("Frekvence")
 xlabel("t [s]")
 %}
+
+
+%% Bode diagram
+data_freq = data_eddy_FRID_cleaned(:,1);
+omega = data_freq(n:end);
+magnitudes_measurements = sqrt(data_eddy_FRID_cleaned(n:end, 3).^2 + data_eddy_FRID_cleaned(n:end, 2) .^2);
+phases_measurements = atan2(data_eddy_FRID_cleaned(n:end, 3), data_eddy_FRID_cleaned(n:end, 2)) * (180 / pi); 
+%omega = omega(401:l,1);
+%omega = logspace(-2, 3, length(magnitudes_measurements)); % Frequency vector in logarithmic scale TODO: change this
+% Bode plot
+figure;
+
+% Magnitude plot
+subplot(2, 1, 1);
+hold on
+semilogx(omega, 20 * log10(magnitudes_measurements),'k');
+bodemag(sys,omega)
+title('Bode Plot - Magnitude');
+xlabel('Frequency ');
+ylabel('Magnitude ');
+grid on;
+
+% Phase plot
+subplot(2, 1, 2);
+hold on
+
+h = bodeplot(sys,omega);
+
+setoptions(h,'MagVisible','off');
+semilogx(omega, unwrap(phases_measurements)+360,'k');
+ylim([-180 360])
+title('Bode Plot - Phase');
+xlabel('Frequency ');
+ylabel('Phase ');
+grid on;
