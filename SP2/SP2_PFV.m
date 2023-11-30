@@ -241,9 +241,11 @@ subplot(2, 1, 1);
 hold on
 semilogx(omega, 20 * log10(magnitudes_measurements),'k');
 bodemag(sys,omega)
+scatter(2*pi*[1,3.5,4],[-4.3649 -1.4014 -0.1991],'mx')
 title('Bode Plot - Magnitude');
 xlabel('Frequency ');
 ylabel('Magnitude ');
+legend('Model', 'Data z sc2fa', 'Rucni mereni')
 grid on;
 
 % Phase plot
@@ -254,10 +256,12 @@ h = bodeplot(sys,omega);
 
 setoptions(h,'MagVisible','off');
 semilogx(omega, unwrap(phases_measurements)+360,'k');
+scatter(2*pi*[1,3.5,4],360-[21.6 69.30 79.2],'mx')
 ylim([-180 360])
 title('Bode Plot - Phase');
 xlabel('Frequency ');
 ylabel('Phase ');
+legend('Model', 'Data z sc2fa', 'Rucni mereni')
 grid on;
 %%
 
@@ -398,7 +402,7 @@ ylabel("Im")
 
 %% Bode diagram
 data_freq = frek_bode(601:100250);
-omega = data_freq;
+omega = 2*pi*data_freq;
 magnitudes_measurements = sqrt(data_nyq(601:100250,2).^2 + data_nyq(601:100250,1) .^2);
 phases_measurements = atan2(data_nyq(601:100250,2), data_nyq(601:100250,1)) * (180 / pi); 
 %omega = omega(401:l,1);
@@ -411,9 +415,8 @@ subplot(2, 1, 1);
 hold on
 semilogx(omega, 20 * log10(magnitudes_measurements),'k');
 bodemag(sys,omega)
-scatter(1,1.7379,'xm');
-scatter(3.5,-4.7127,'xm');
-scatter(6,-7.5557,'xm');
+scatter(2*pi*[1 3.5 6],[1.9379 -4.7127 -7.5557],'xm');
+
 title('Bode Plot - Magnitude');
 xlabel('Frequency ');
 ylabel('Magnitude ');
@@ -427,8 +430,8 @@ h = bodeplot(sys,omega);
 
 setoptions(h,'MagVisible','off');
 semilogx(omega, unwrap(phases_measurements)+360,'k');
-scatter(6,216,'xm');
-ylim([220 380])
+scatter(2*pi*[1 3.5 6],360-[86.4 176.4 360-144],'xm');
+ylim([150 380])
 title('Bode Plot - Phase');
 xlabel('Frequency ');
 ylabel('Phase ');
@@ -636,7 +639,7 @@ xlabel("t [s]")
 
 %% Bode diagram
 data_freq = data_eddy_FRID_cleaned(:,1);
-omega = data_freq(n:end);
+omega = 2*pi*data_freq(n:end);
 magnitudes_measurements = sqrt(data_eddy_FRID_cleaned(n:end, 3).^2 + data_eddy_FRID_cleaned(n:end, 2) .^2);
 phases_measurements = atan2(data_eddy_FRID_cleaned(n:end, 3), data_eddy_FRID_cleaned(n:end, 2)) * (180 / pi); 
 %omega = omega(401:l,1);
@@ -649,9 +652,11 @@ subplot(2, 1, 1);
 hold on
 semilogx(omega, 20 * log10(magnitudes_measurements),'k');
 bodemag(sys,omega)
+scatter(2*pi*[10 50 100],[1.9069 4.105 -4.5781],'xm');
 title('Bode Plot - Magnitude');
 xlabel('Frequency ');
 ylabel('Magnitude ');
+legend("Namerena data FRID", "Identifikovany system", "Rucne merena data")
 grid on;
 
 % Phase plot
@@ -662,8 +667,11 @@ h = bodeplot(sys,omega);
 
 setoptions(h,'MagVisible','off');
 semilogx(omega, unwrap(phases_measurements)+360,'k');
+scatter(2*pi*[10 50 100],360-[172.8 72 360],'xm');
 ylim([-180 360])
 title('Bode Plot - Phase');
 xlabel('Frequency ');
 ylabel('Phase ');
+legend("Namerena data FRID", "Identifikovany system", "Rucne merena data")
+
 grid on;
